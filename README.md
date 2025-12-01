@@ -16,7 +16,7 @@ This project is a **gamified personal portfolio** that simulates a fully functio
 
 Unlike traditional static portfolios, this application demonstrates technical proficiency immediately upon loading. It features a working virtual file system, command parser, tab autocompletion, and real-time API integrations, all wrapped in a responsive, retro-styled CLI interface.
 
-**Live Demo:** [Insert Your Vercel/Netlify Link Here]
+**Live Demo:** [INSERT YOUR LIVE DEMO LINK HERE]
 
 ---
 
@@ -41,7 +41,7 @@ Unlike traditional static portfolios, this application demonstrates technical pr
 * **Weather API:** `weather <city>` fetches real-time ASCII weather reports.
 * **Matrix Mode:** `matrix` triggers a falling code rain visual effect.
 * **Self-Destruct:** Try running `rm -rf /` ... if you dare.
-* **Sudo:** Try gaining root access to see what happens.
+* **Sudo:** Try gaining root access to see custom error handling.
 
 ---
 
@@ -75,18 +75,29 @@ Unlike traditional static portfolios, this application demonstrates technical pr
 
 ## ⌨️ Available Commands
 
-Type `help` in the terminal to see this list.
+Type `help` in the terminal to see this list organized by category.
 
+### Navigation & Files
 | Command | Description |
 | :--- | :--- |
-| **`help`** | Show list of available commands |
 | **`ls`** | List directory contents (files & folders) |
 | **`cd <dir>`** | Change directory (e.g., `cd projects`) |
 | **`cat <file>`** | Read file content (e.g., `cat about.txt`) |
 | **`pwd`** | Print working directory |
+| **`mkdir <dir>`** | Create a directory (simulated) |
+| **`touch <file>`** | Create a file (simulated) |
+
+### System & Utils
+| Command | Description |
+| :--- | :--- |
 | **`clear`** | Clear the terminal screen |
 | **`whoami`** | Display current user |
 | **`theme <name>`** | Change UI theme (`kali`, `ubuntu`, `cyber`) |
+| **`fetch`** | Display system information (Neofetch style) |
+
+### External & Fun
+| Command | Description |
+| :--- | :--- |
 | **`resume`** | **Download the PDF resume** |
 | **`github <user>`** | Fetch top repositories for a GitHub user |
 | **`weather <city>`** | Fetch live weather for a specific city |
@@ -97,40 +108,49 @@ Type `help` in the terminal to see this list.
 ## 📂 Project Structure
 
 ```text
-src/
-├── App.jsx          # Main application logic (Terminal, File System, Commands)
-├── index.css        # Global styles & Tailwind directives
-├── main.jsx         # React entry point
-└── assets/          # Static assets
-public/
-└── resume.pdf       # The downloadable resume file
+.
+├── public/
+│   └── resume.pdf       # The downloadable resume file
+├── src/
+│   ├── assets/          # Static assets (images, icons)
+│   ├── App.jsx          # Main application logic (Terminal, File System)
+│   ├── index.css        # Global styles & Tailwind directives
+│   └── main.jsx         # React entry point
+├── index.html           # HTML entry point
+├── tailwind.config.js   # Tailwind CSS configuration
+├── postcss.config.js    # PostCSS configuration
+├── vite.config.js       # Vite bundler configuration
+└── package.json         # Project dependencies and scripts.
+```
 
 ## ⚙️ Customization
+
 To personalize this portfolio for yourself:
 
-**Edit Content:** Open src/App.jsx and modify the INITIAL_FILE_SYSTEM object. This is where you change the text inside about.txt, skills.md, etc.
+1.  **Edit Content:** Open `src/App.jsx` and modify the `INITIAL_FILE_SYSTEM` object. This is where you change the text inside `about.txt`, `skills.md`, etc.
+2.  **Change Links:** Search for the `projects` object in `src/App.jsx` to update your GitHub repository links.
+3.  **Update Resume:** Replace `public/resume.pdf` with your actual resume file.
 
-**Change Links:** Search for the projects object in src/App.jsx to update your GitHub repository links.
-
-**Update Resume:** Replace public/resume.pdf with your actual resume file.
+---
 
 ## 🛠️ Built With
-**React** - Frontend library
 
-**Tailwind CSS** - Utility-first CSS framework
+* [React](https://reactjs.org/) - Frontend library for component-based UI.
+* [Tailwind CSS](https://tailwindcss.com/) - Utility-first CSS framework for styling.
+* [Vite](https://vitejs.dev/) - Next Generation Frontend Tooling for fast builds.
+* [Lucide React](https://lucide.dev/) - Beautiful & consistent icons.
 
-**Vite** - Next Generation Frontend Tooling
-
-**Lucide React** - Icon set
+---
 
 ## 👨‍💻 Author
-### Anas Tagui
 
-**Role:** Cyber Security Specialist & Full Stack Developer
+**Anas Tagui**
+* **Role:** Cyber Security Specialist & Full Stack Developer
+* **GitHub:** [@anas-tagui](https://github.com/anas-tagui)
+* **Email:** [dev@example.com](mailto:dev@example.com)
 
-**GitHub:** @anas-tagui
-
-**Email:** atagui.ir2027@esaip.org
+---
 
 ## 📄 License
-This project is licensed under the MIT License - see the LICENSE file for details.
+
+This project is licensed under the MIT License.
