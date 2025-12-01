@@ -173,7 +173,7 @@ const INITIAL_FILE_SYSTEM = {
                        <h3 className="font-bold">Terminal Portfolio (This Site)</h3>
                        <p className="text-sm opacity-70">React, Tailwind, Vite</p>
                        <p className="mb-2">A fully interactive terminal simulator built with modern web technologies. Features a virtual file system, command parser, and themes.</p>
-                       <a href="https://github.com/yourusername/terminal-portfolio" target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:underline block mt-2 w-fit">[GitHub Repo]</a>
+                       <a href="https://github.com/taguianas/terminal-portfolio" target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:underline block mt-2 w-fit">[GitHub Repo]</a>
                     </div>
                   )
                 }

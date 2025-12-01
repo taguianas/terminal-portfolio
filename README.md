@@ -16,7 +16,7 @@ This project is a **gamified personal portfolio** that simulates a fully functio
 
 Unlike traditional static portfolios, this application demonstrates technical proficiency immediately upon loading. It features a working virtual file system, command parser, tab autocompletion, and real-time API integrations, all wrapped in a responsive, retro-styled CLI interface.
 
-**Live Demo:** [INSERT YOUR LIVE DEMO LINK HERE]
+**Live Demo:** [https://atagui.vercel.app/]
 
 ---
 
@@ -55,7 +55,7 @@ Unlike traditional static portfolios, this application demonstrates technical pr
 
 1.  **Clone the repository:**
     ```bash
-    git clone [https://github.com/anas-tagui/terminal-portfolio.git](https://github.com/anas-tagui/terminal-portfolio.git)
+    git clone [https://github.com/taguianas/terminal-portfolio.git](https://github.com/taguianas/terminal-portfolio.git)
     cd terminal-portfolio
     ```
 
@@ -146,8 +146,8 @@ To personalize this portfolio for yourself:
 
 **Anas Tagui**
 * **Role:** Cyber Security Specialist & Full Stack Developer
-* **GitHub:** [@anas-tagui](https://github.com/anas-tagui)
-* **Email:** [dev@example.com](mailto:dev@example.com)
+* **GitHub:** [@anas-tagui](https://github.com/taguianas)
+* **Email:** [atagui.ir2027@esaip.org](mailto:atagui.ir2027@esaip.org)
 
 ---
 
