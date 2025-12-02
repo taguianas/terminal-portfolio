@@ -148,3 +148,8 @@ To personalize this portfolio for yourself:
 * **Role:** Cyber Security Specialist & Full Stack Developer
 * **GitHub:** [@anas-tagui](https://github.com/taguianas)
 * **Email:** [atagui.ir2027@esaip.org](mailto:atagui.ir2027@esaip.org)
+---
+
+## 📄 License
+
+This project is licensed under the MIT License.
