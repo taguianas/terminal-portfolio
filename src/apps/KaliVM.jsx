@@ -122,6 +122,8 @@ export default function KaliVM({ active, setTitle }) {
       });
 
       say(`${OK} Kernel ready. Logging in as kali ...`);
+      say(`${B} The first login loads the shell over the network (10-30 s).`);
+      say(`${B} Wait for the \x1b[1;34mkali㉿kali\x1b[0m prompt before typing.`);
       say();
       setStatus('running');
       fit.fit();

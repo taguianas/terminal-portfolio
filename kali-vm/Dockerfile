@@ -12,7 +12,7 @@ ARG DEBIAN_FRONTEND=noninteractive
 # prompt as the zsh one). zsh is not used: it hangs on pipes in CheerpX.
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
-      kali-defaults bash-completion ca-certificates less nano vim-tiny file procps man-db
+      kali-defaults ca-certificates less nano vim-tiny file procps man-db
 
 # Tools. Installed one at a time so that a package that no longer
 # exists for i386 is skipped instead of breaking the whole build.
@@ -39,7 +39,8 @@ COPY sudo /usr/local/bin/sudo
 RUN cat /tmp/bashrc-extra >> /home/kali/.bashrc && rm /tmp/bashrc-extra && \
     echo 'cat /etc/motd' >> /home/kali/.profile && \
     chmod 755 /usr/local/bin/sudo /home/kali/challenges/unlock.sh /home/kali/challenges/crack.py && \
-    chown -R kali:kali /home/kali && chmod 755 /home/kali
+    touch /home/kali/.hushlogin && \
+    chown -R kali:kali /home/kali && chmod -R a+rwX /home/kali
 
 WORKDIR /home/kali
 ENV HOME=/home/kali USER=kali SHELL=/bin/bash TERM=xterm-256color LANG=C.UTF-8

@@ -9,6 +9,8 @@
 # recon / network (work against localhost only)
 nmap
 netcat-traditional
+net-tools
+iproute2
 whois
 dnsutils
 
