@@ -19,7 +19,7 @@ const THEME = {
 };
 
 const ENV = [
-  'HOME=/home/kali', 'USER=kali', 'LOGNAME=kali', 'SHELL=/bin/zsh',
+  'HOME=/home/kali', 'USER=kali', 'LOGNAME=kali', 'SHELL=/bin/bash',
   'TERM=xterm-256color', 'LANG=C.UTF-8', 'EDITOR=nano',
   'PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin',
 ];
@@ -131,7 +131,7 @@ export default function KaliVM({ active, setTitle }) {
 
       // like a real terminal: if the shell exits, start a new one
       while (!disposed) {
-        await cx.run('/bin/zsh', ['-l'], { env: ENV, cwd: '/home/kali', uid: 1000, gid: 1000 });
+        await cx.run('/bin/bash', ['--login'], { env: ENV, cwd: '/home/kali', uid: 1000, gid: 1000 });
         if (!disposed) say(`\r\n${B} Shell exited, starting a new one ...`);
       }
     };

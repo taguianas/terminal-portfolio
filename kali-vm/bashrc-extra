@@ -1,0 +1,5 @@
+
+# --- portfolio VM ---
+# CheerpX has no hostname, so show Kali's default one in the prompt
+PS1="${PS1//\\h/kali}"
+alias ll='ls -la'

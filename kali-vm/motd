@@ -5,7 +5,8 @@
     ls                     my portfolio files
     cat about.txt          who I am
     cd challenges          a small CTF, try to crack it
-    sudo -i                you are root here, go ahead
+    nmap --version, r2, python3, sqlmap, binwalk, exiftool ...
 
+  First run of a tool can take a few seconds (it is downloaded).
   No internet in this VM. Your changes stay in your browser only.
 

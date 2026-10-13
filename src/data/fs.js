@@ -29,7 +29,7 @@ const README = `
    * Real Kali: double-click "Kali Linux (real VM)" or
                type kali-vm. It boots a genuine Kali
                (i386) inside your browser, with real
-               john, nmap, radare2, tcc ... and a mini CTF.
+               nmap, radare2, python3 ... and a mini CTF.
 
  Quick links
    About me ........ about.txt

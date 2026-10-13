@@ -8,11 +8,11 @@ FROM --platform=linux/386 docker.io/kalilinux/kali-rolling
 
 ARG DEBIAN_FRONTEND=noninteractive
 
-# Base system: Kali's own zsh prompt and defaults
+# Base system with Kali's defaults (its bash prompt is the same two-line
+# prompt as the zsh one). zsh is not used: it hangs on pipes in CheerpX.
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
-      kali-defaults zsh zsh-autosuggestions zsh-syntax-highlighting \
-      sudo ca-certificates less nano vim-tiny file procps man-db
+      kali-defaults bash-completion ca-certificates less nano vim-tiny file procps man-db
 
 # Tools. Installed one at a time so that a package that no longer
 # exists for i386 is skipped instead of breaking the whole build.
@@ -26,19 +26,21 @@ RUN for p in $(grep -v '^\s*#' /tmp/packages.txt); do \
     find /usr/share/locale -mindepth 1 -maxdepth 1 ! -name 'en*' ! -name 'locale.alias' -exec rm -rf {} + && \
     find / -xdev -name '__pycache__' -type d -prune -exec rm -rf {} +
 
-# The default Kali user (password: kali), with sudo like on a real install
-RUN useradd -m -s /bin/zsh -G sudo kali && \
-    echo 'kali:kali' | chpasswd && echo 'root:kali' | chpasswd && \
-    echo 'kali ALL=(ALL) NOPASSWD:ALL' > /etc/sudoers.d/kali && chmod 440 /etc/sudoers.d/kali
+# The default Kali user (password: kali)
+RUN useradd -m -s /bin/bash kali && \
+    echo 'kali:kali' | chpasswd && echo 'root:kali' | chpasswd
 
 # Portfolio files (generated from src/data/fs.js by export-home.mjs)
 COPY --chown=1000:1000 home/ /home/kali/
 COPY --chown=1000:1000 challenges/ /home/kali/challenges/
 COPY motd /etc/motd
-RUN if [ -x /usr/bin/tcc ]; then ln -sf /usr/bin/tcc /usr/local/bin/gcc && ln -sf /usr/bin/tcc /usr/local/bin/cc; fi && \
-    chmod +x /home/kali/challenges/unlock.sh && \
-    echo 'cat /etc/motd' > /home/kali/.zlogin && chown 1000:1000 /home/kali/.zlogin
+COPY bashrc-extra /tmp/bashrc-extra
+COPY sudo /usr/local/bin/sudo
+RUN cat /tmp/bashrc-extra >> /home/kali/.bashrc && rm /tmp/bashrc-extra && \
+    echo 'cat /etc/motd' >> /home/kali/.profile && \
+    chmod 755 /usr/local/bin/sudo /home/kali/challenges/unlock.sh /home/kali/challenges/crack.py && \
+    chown -R kali:kali /home/kali && chmod 755 /home/kali
 
 WORKDIR /home/kali
-ENV HOME=/home/kali USER=kali SHELL=/bin/zsh TERM=xterm-256color LANG=C.UTF-8
-CMD ["/bin/zsh", "-l"]
+ENV HOME=/home/kali USER=kali SHELL=/bin/bash TERM=xterm-256color LANG=C.UTF-8
+CMD ["/bin/bash", "--login"]

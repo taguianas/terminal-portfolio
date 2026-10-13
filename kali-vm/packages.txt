@@ -3,7 +3,7 @@
 # Anything not available for i386 is skipped and listed in the build log.
 # Keep it small: the whole disk must stay under ~950 MB for GitHub Pages.
 # Left out on purpose because they are huge: hashcat (pulls LLVM/OpenCL),
-# gdb, git, full vim, gcc (tcc, a tiny real C compiler, replaces it),
+# gdb, git, full vim, gcc,
 # hydra and fastfetch (pull in Samba, ffmpeg and image libraries).
 
 # recon / network (work against localhost only)
@@ -14,6 +14,7 @@ dnsutils
 
 # passwords and hashes
 john
+# (john needs timers CheerpX lacks: kept for its wordlist, see challenges/crack.py)
 hashid
 crunch
 
@@ -30,8 +31,6 @@ hexedit
 
 # reverse engineering / dev
 radare2
-tcc
-libc6-dev
 python3
 curl
 wget

@@ -1,0 +1,4 @@
+#!/bin/sh
+echo "sudo: not available in this browser VM (CheerpX sandbox)." >&2
+echo "You are already 'kali', and nothing here can leave your browser anyway." >&2
+exit 1
