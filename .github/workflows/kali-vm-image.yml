@@ -58,6 +58,9 @@ jobs:
 
       - name: Compute disk size
         run: |
+          echo "Biggest installed packages (KB):"
+          docker run --rm --platform=linux/386 $TAG dpkg-query -Wf '${Installed-Size}\t${Package}\n' | sort -rn | head -25 | tee /tmp/top.txt
+          echo "::notice title=Biggest packages (KB)::$(head -15 /tmp/top.txt | tr '\t\n' ' ;')"
           BYTES=$(docker export $CONTAINER_ID | wc -c)
           MB=$(( BYTES * 13 / 10 / 1048576 + 64 ))
           echo "Filesystem: $(( BYTES / 1048576 )) MB, disk image: ${MB} MB"

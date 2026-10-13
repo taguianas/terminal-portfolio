@@ -1,6 +1,9 @@
 # Tools installed in the browser Kali (one per line).
 # The VM has no internet access, so offline tools make the most sense.
 # Anything not available for i386 is skipped and listed in the build log.
+# Keep it small: the whole disk must stay under ~950 MB for GitHub Pages.
+# Left out on purpose because they are huge: hashcat (pulls LLVM/OpenCL),
+# gdb, git, full vim.
 
 # recon / network (work against localhost only)
 nmap
@@ -10,7 +13,6 @@ dnsutils
 
 # passwords and hashes
 john
-hashcat
 hashid
 hydra
 crunch
@@ -28,12 +30,9 @@ hexedit
 
 # reverse engineering / dev
 radare2
-gdb
-ltrace
 gcc
 make
 python3
-git
 curl
 wget
 
