@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { Power, Wifi, Volume2, BatteryFull, User, Accessibility } from 'lucide-react';
+import { Power, Accessibility } from 'lucide-react';
 import { CONFIG } from '../config';
 import { Logo } from '../components/Icons';
 import { wallpaperStyle } from './wallpaper';
@@ -87,27 +87,46 @@ export function BootLogs({ onDone, fast = false, verbose = false, recovery = fal
 }
 
 // ------------------------------ LightDM ----------------------------
-export function Login({ onLogin, locked = false }) {
+// Kali's lightdm-gtk-greeter: top indicator bar (host, clock, session,
+// accessibility, power) and a centered login box under the logo.
+function XfceIcon({ size = 15 }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="currentColor">
+      <path d="M4 7c2-2 5-1 6 1l1 2c1-1 3-2 5-1l2-3 1 1-2 3c1 1 1 3 0 4l1 4h-2l-1-3c-1 1-3 1-4 0l-2 3H7l2-4C6 13 3 11 4 7z" />
+    </svg>
+  );
+}
+
+export function Login({ onLogin, onPower, locked = false }) {
   const [user, setUser] = useState(locked ? CONFIG.user : '');
   const [pass, setPass] = useState('');
   const [busy, setBusy] = useState(false);
   const [auto, setAuto] = useState(true);
+  const [menu, setMenu] = useState(null); // session | a11y | power
+  const [session, setSession] = useState('Xfce Session');
+  const [largeText, setLargeText] = useState(() => document.body.style.zoom === '1.15');
+  const [contrast, setContrast] = useState(() => document.documentElement.style.filter.includes('contrast'));
+  const [suspended, setSuspended] = useState(false);
   const [now, setNow] = useState(new Date());
-  const passRef = useRef(null);
+  const btnRef = useRef(null);
+  const barRef = useRef(null);
 
   useEffect(() => {
-    const t = setInterval(() => setNow(new Date()), 15000);
+    const t = setInterval(() => setNow(new Date()), 1000);
     return () => clearInterval(t);
   }, []);
 
+  useEffect(() => { document.body.style.zoom = largeText ? '1.15' : ''; }, [largeText]);
+  useEffect(() => { document.documentElement.style.filter = contrast ? 'contrast(1.35) saturate(1.2)' : ''; }, [contrast]);
+
   const submit = (e) => {
     e?.preventDefault();
-    if (busy) return;
+    if (busy || suspended) return;
     setBusy(true);
     setTimeout(onLogin, 550);
   };
 
-  // auto-type "visitor" / password, then wait for the visitor to click Log In
+  // auto-type the guest credentials, then wait for the visitor
   const filled = user.length >= CONFIG.user.length && pass.length >= 8;
   useEffect(() => {
     if (!auto) return;
@@ -118,17 +137,17 @@ export function Login({ onLogin, locked = false }) {
     else setAuto(false);
     return () => clearTimeout(t);
   });
-
   const stopAuto = () => setAuto(false);
 
-  // Enter logs in from anywhere on the screen, even when no field has focus
-  // (inside the fields the form's own submit already handles it)
-  const btnRef = useRef(null);
   useEffect(() => {
     if (filled && !auto) btnRef.current?.focus({ preventScroll: true });
   }, [filled, auto]);
+
+  // Enter logs in from anywhere; Escape closes menus; any key wakes from suspend
   useEffect(() => {
     const onKey = (e) => {
+      if (suspended) { setSuspended(false); return; }
+      if (e.key === 'Escape') setMenu(null);
       if (e.key !== 'Enter' || e.target.closest?.('form')) return;
       e.preventDefault();
       submit();
@@ -137,63 +156,110 @@ export function Login({ onLogin, locked = false }) {
     return () => window.removeEventListener('keydown', onKey);
   });
 
+  useEffect(() => {
+    if (!menu) return;
+    const close = (e) => { if (!barRef.current?.contains(e.target)) setMenu(null); };
+    window.addEventListener('pointerdown', close);
+    return () => window.removeEventListener('pointerdown', close);
+  }, [menu]);
+
+  const power = (a) => {
+    setMenu(null);
+    if (a === 'suspend') setSuspended(true);
+    else onPower?.(a);
+  };
+
+  const time = now.toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short' }) + ', ' + now.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
+
   return (
     <div className="fixed inset-0 font-ui text-[#e8eaee] select-none" style={wallpaperStyle}>
-      <div className="absolute inset-0 bg-black/45 backdrop-blur-[6px]" />
-      <div className="absolute top-0 inset-x-0 h-8 flex items-center px-3 text-[13px] bg-black/40">
-        <span className="font-semibold">{CONFIG.host}</span>
-        <span className="absolute left-1/2 -translate-x-1/2 font-semibold tabular-nums">
-          {now.toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short' })}, {now.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' })}
-        </span>
-        <div className="ml-auto flex items-center gap-3 text-[#c4c9d3]">
-          <Accessibility size={15} /><Wifi size={15} /><Volume2 size={15} /><BatteryFull size={17} /><Power size={15} />
+      {/* indicator bar */}
+      <div ref={barRef} className="absolute top-0 inset-x-0 h-[26px] flex items-center text-[13px] bg-black/60 z-10">
+        <span className="px-3 font-semibold">{CONFIG.host}</span>
+        <span className="absolute left-1/2 -translate-x-1/2 font-semibold tabular-nums">{time}</span>
+        <div className="ml-auto flex items-center h-full">
+          <BarBtn on={menu === 'session'} onClick={() => setMenu(menu === 'session' ? null : 'session')} title="Session"><XfceIcon /></BarBtn>
+          <BarBtn on={menu === 'a11y'} onClick={() => setMenu(menu === 'a11y' ? null : 'a11y')} title="Accessibility"><Accessibility size={15} /></BarBtn>
+          <BarBtn on={menu === 'power'} onClick={() => setMenu(menu === 'power' ? null : 'power')} title="Power"><Power size={15} /></BarBtn>
         </div>
+        {menu && (
+          <div className="absolute right-1 top-full mt-0.5 min-w-[200px] py-1 rounded bg-[#1f2129] border border-[#363a46] shadow-2xl text-[13px]">
+            {menu === 'session' && ['Xfce Session', 'Default Xsession'].map((s) => (
+              <MenuItem key={s} onClick={() => { setSession(s); setMenu(null); }}>
+                <span className="w-4 inline-block">{session === s ? '●' : ''}</span>{s}
+              </MenuItem>
+            ))}
+            {menu === 'a11y' && (
+              <>
+                <MenuItem onClick={() => setLargeText((v) => !v)}><span className="w-4 inline-block">{largeText ? '✓' : ''}</span>Large Font</MenuItem>
+                <MenuItem onClick={() => setContrast((v) => !v)}><span className="w-4 inline-block">{contrast ? '✓' : ''}</span>High Contrast</MenuItem>
+              </>
+            )}
+            {menu === 'power' && (
+              <>
+                <MenuItem onClick={() => power('suspend')}>Suspend</MenuItem>
+                <MenuItem onClick={() => power('reboot')}>Restart...</MenuItem>
+                <MenuItem onClick={() => power('shutdown')}>Shut Down...</MenuItem>
+              </>
+            )}
+          </div>
+        )}
       </div>
 
-      <form onSubmit={submit} className="relative h-full flex flex-col items-center justify-center gap-6 px-6 -mt-6">
-        <Logo size={110} className="drop-shadow-[0_6px_24px_rgba(54,123,240,0.45)]" />
-        <div className="w-full max-w-[320px] space-y-3">
-          <div className="flex items-center gap-2 h-10 px-3 rounded bg-[#14161d]/85 border border-[#3a3f4d] focus-within:border-[#367bf0]">
-            <User size={16} className="text-[#8b93a3]" />
-            <input
-              value={user}
-              onChange={(e) => { stopAuto(); setUser(e.target.value); }}
-              onFocus={stopAuto}
-              placeholder="Username"
-              className="flex-1 bg-transparent outline-none placeholder:text-[#6b7383]"
-              autoComplete="off"
-              spellCheck={false}
-            />
+      {/* login box */}
+      <form onSubmit={submit} className="relative h-full flex flex-col items-center justify-center px-6">
+        <Logo size={132} className="mb-7 drop-shadow-[0_8px_28px_rgba(0,0,0,0.6)]" />
+        <div className="w-full max-w-[340px] rounded-md bg-[#16181e]/80 backdrop-blur-md border border-white/[0.06] shadow-[0_20px_60px_rgba(0,0,0,0.55)] p-5 space-y-3">
+          <input
+            value={user}
+            onChange={(e) => { stopAuto(); setUser(e.target.value); }}
+            onFocus={stopAuto}
+            placeholder="Username"
+            className="w-full h-9 px-3 rounded bg-[#0e1014] border border-[#2c303a] focus:border-[#367bf0] outline-none text-[14px] placeholder:text-[#6b7383]"
+            autoComplete="off"
+            spellCheck={false}
+          />
+          <input
+            type="password"
+            value={pass}
+            onChange={(e) => { stopAuto(); setPass(e.target.value); }}
+            onFocus={stopAuto}
+            placeholder="Password"
+            className="w-full h-9 px-3 rounded bg-[#0e1014] border border-[#2c303a] focus:border-[#367bf0] outline-none text-[14px] tracking-wider placeholder:tracking-normal placeholder:text-[#6b7383]"
+          />
+          <div className="flex items-center justify-between pt-1">
+            <span className="flex items-center gap-1.5 text-[12px] text-[#8b93a3]"><XfceIcon size={13} />{session}</span>
+            <button
+              ref={btnRef}
+              type="submit"
+              className={`h-8 px-5 rounded bg-[#367bf0] hover:bg-[#4a8bff] text-white text-[13.5px] font-semibold outline-none focus-visible:ring-2 focus-visible:ring-[#9cc2ff] ${filled && !busy ? 'ring-2 ring-[#9cc2ff]/70' : ''}`}
+            >
+              {busy ? 'Logging in…' : 'Log In'}
+            </button>
           </div>
-          <div className="flex items-center gap-2 h-10 px-3 rounded bg-[#14161d]/85 border border-[#3a3f4d] focus-within:border-[#367bf0]">
-            <span className="text-[#8b93a3] text-[15px] w-4 text-center">*</span>
-            <input
-              ref={passRef}
-              type="password"
-              value={pass}
-              onChange={(e) => { stopAuto(); setPass(e.target.value); }}
-              onFocus={stopAuto}
-              placeholder="Password"
-              className="flex-1 bg-transparent outline-none placeholder:text-[#6b7383]"
-            />
-          </div>
-          <button
-            ref={btnRef}
-            type="submit"
-            className={`w-full h-10 rounded bg-[#367bf0] hover:bg-[#4a8bff] font-semibold text-white transition-colors ${filled && !busy ? 'ring-2 ring-[#5aa2ff] ring-offset-2 ring-offset-black/40 animate-pulse' : ''}`}
-          >
-            {busy ? 'Logging in...' : 'Log In'}
-          </button>
-        </div>
-        <div className={`text-[12px] text-center transition-colors ${filled ? 'text-white' : 'text-[#aeb4c0]'}`}>
-          {filled
-            ? <>Credentials filled in for you. Click <b>Log In</b> (or press Enter).</>
-            : <>{locked ? 'Session locked.' : 'Guest access enabled.'} Signing you in as <b>{CONFIG.user}</b> ...</>}
         </div>
       </form>
-      {busy && <div className="absolute inset-0 bg-black animate-[fadeIn_.5s_ease_forwards]" />}
+
+      <div className="absolute bottom-4 inset-x-0 text-center text-[12px] text-white/55">
+        {locked ? 'Session locked. ' : ''}{filled ? 'Guest credentials filled in. Press Log In or Enter.' : `Signing in as ${CONFIG.user}…`}
+      </div>
+
+      {busy && <div className="absolute inset-0 bg-black animate-[fadeIn_.5s_ease_forwards] z-20" />}
+      {suspended && (
+        <div className="absolute inset-0 bg-black z-30 flex items-end justify-center pb-6 cursor-pointer" onClick={() => setSuspended(false)}>
+          <span className="text-[11px] text-white/25">Suspended. Press any key or click to wake up.</span>
+        </div>
+      )}
     </div>
   );
+}
+
+function BarBtn({ children, on, ...rest }) {
+  return <button type="button" className={`h-full px-2.5 flex items-center ${on ? 'bg-white/15' : 'hover:bg-white/10'}`} {...rest}>{children}</button>;
+}
+
+function MenuItem({ children, onClick }) {
+  return <button type="button" onClick={onClick} className="w-full text-left px-3 py-1.5 hover:bg-[#367bf0] hover:text-white">{children}</button>;
 }
 
 // ------------------------------ shutdown ---------------------------

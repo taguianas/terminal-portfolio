@@ -62,13 +62,13 @@ export default function App() {
   if (stage === 'off') screen = <PoweredOff onPowerOn={() => setStage('grub')} />;
   else if (stage === 'grub') screen = mobile ? <BootLogs fast onDone={() => setStage('login')} /> : <Grub onDone={(o) => { setBootOpts(o || {}); setStage('boot'); }} />;
   else if (stage === 'boot') screen = <BootLogs verbose={bootOpts.verbose || !getFirmware().quietBoot} recovery={bootOpts.recovery} onDone={() => setStage('login')} />;
-  else if (stage === 'login' && !mobile) screen = <Login onLogin={login} />;
+  else if (stage === 'login' && !mobile) screen = <Login onLogin={login} onPower={power} />;
   else if (mobile) screen = <MobileShell key={session} base={base} />;
   else {
     screen = (
       <>
         <Desktop key={session} base={base} />
-        {stage === 'lock' && <div className="fixed inset-0 z-[150000]"><Login locked onLogin={() => setStage('desktop')} /></div>}
+        {stage === 'lock' && <div className="fixed inset-0 z-[150000]"><Login locked onPower={power} onLogin={() => setStage('desktop')} /></div>}
       </>
     );
   }
