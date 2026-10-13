@@ -57,6 +57,28 @@ export function KaliVMIcon({ size = 48 }) {
   );
 }
 
+export function SettingsAppIcon({ size = 48 }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 48 48">
+      <circle cx="24" cy="24" r="19" fill="#3a3f4d" />
+      <g fill="none" stroke="#dfe3ea" strokeWidth="3">
+        <circle cx="24" cy="24" r="6" />
+        <path d="M24 3v6M24 39v6M3 24h6M39 24h6M9 9l4 4M35 35l4 4M39 9l-4 4M13 35l-4 4" />
+      </g>
+    </svg>
+  );
+}
+
+export function MonitorAppIcon({ size = 48 }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 48 48">
+      <rect x="5" y="8" width="38" height="28" rx="3" fill="#15181e" stroke="#4b5263" strokeWidth="1.5" />
+      <polyline points="9,28 15,20 20,25 27,13 33,22 39,15" fill="none" stroke="#4fd16b" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" />
+      <rect x="18" y="40" width="12" height="3" rx="1.5" fill="#4b5263" />
+    </svg>
+  );
+}
+
 export function MailIcon({ size = 48 }) {
   return (
     <svg width={size} height={size} viewBox="0 0 48 48">

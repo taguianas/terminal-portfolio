@@ -7,11 +7,12 @@ import AppMenu, { buildMenu } from './AppMenu';
 import { APPS } from '../apps';
 import { HOME, getNode, listDir } from '../data/fs';
 import { NodeIcon, DriveIcon, HomeIcon, TrashIcon, TerminalAppIcon, KaliVMIcon, RecruiterIcon, MailIcon } from '../components/Icons';
-import { wallpaperStyle } from './wallpaper';
+import { useWallpaperStyle } from './wallpaper';
 import { play } from './sound';
 import { X as XIcon, Bell as BellIcon } from 'lucide-react';
 
 export default function Desktop({ base }) {
+  const wallpaperStyle = useWallpaperStyle();
   const [wins, setWins] = useState([]);
   const [activeId, setActiveId] = useState(null);
   const [workspace, setWorkspaceState] = useState(1);

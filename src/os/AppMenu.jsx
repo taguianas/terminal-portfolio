@@ -10,6 +10,8 @@ export function buildMenu(act) {
   const I = (Icon, color) => function MenuIcon() { return <Icon size={22} color={color} />; };
   const items = {
     recruiter: { name: 'Recruiter view', desc: 'One-page profile: experience, projects, resume', Icon: I(Users, '#367bf0'), run: () => act.recruiter() },
+    settings: { name: 'Settings', desc: 'Wallpaper, sound, about', Icon: I(Settings, '#9aa3b2'), run: () => act.app('settings') },
+    sysmon: { name: 'System Monitor', desc: 'Live CPU, memory and processes', Icon: I(Cpu, '#4fd16b'), run: () => act.app('sysmon') },
     mail: { name: 'Mail', desc: 'Send me a message by email', Icon: I(Users, '#2d7cf0'), run: () => act.app('mail') },
     kalivm: { name: 'Kali Linux (real VM)', desc: 'A real Kali booted in your browser', Icon: I(TermI, '#5aa2ff'), run: () => act.app('kalivm') },
     terminal: { name: 'Terminal Emulator', desc: 'Use the command line', Icon: I(TermI, '#4fd16b'), run: () => act.app('terminal') },
@@ -46,7 +48,7 @@ export function buildMenu(act) {
     ['08 - Exploitation Tools', Crosshair, ['msf', 'projects', 'labs', 'github']],
     ['12 - Reporting Tools', FileText, ['resume', 'certs']],
     ['13 - Social Engineering Tools', Users, ['phishguard', 'contact', 'mail']],
-    ['Usual Applications', Wrench, ['kalivm', 'terminal', 'files', 'firefox', 'editor', 'neofetch']],
+    ['Usual Applications', Wrench, ['kalivm', 'terminal', 'files', 'firefox', 'editor', 'sysmon', 'settings', 'neofetch']],
   ];
   return { items, cats };
 }

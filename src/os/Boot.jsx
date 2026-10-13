@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { Power, Accessibility, Briefcase } from 'lucide-react';
 import { CONFIG } from '../config';
 import { Logo } from '../components/Icons';
-import { wallpaperStyle } from './wallpaper';
+import { useWallpaperStyle } from './wallpaper';
 
 // --------------------------- kernel / systemd ----------------------
 const LOGS = [
@@ -98,6 +98,7 @@ function XfceIcon({ size = 15 }) {
 }
 
 export function Login({ onLogin, onPower, onRecruiter, locked = false }) {
+  const wallpaperStyle = useWallpaperStyle();
   const [user, setUser] = useState(locked ? CONFIG.user : '');
   const [pass, setPass] = useState('');
   const [busy, setBusy] = useState(false);

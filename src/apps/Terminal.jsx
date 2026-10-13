@@ -33,6 +33,8 @@ export const COMMANDS = {
   contact: 'How to reach me',
   recruiter: 'One-page profile for recruiters',
   mail: 'Open the mail app to contact me',
+  settings: 'Open the settings app',
+  top: 'Open the system monitor',
   'kali-vm': 'Boot a REAL Kali Linux in your browser',
   firefox: 'Open the browser (firefox [url])',
   thunar: 'Open the file manager',
@@ -280,7 +282,7 @@ export default function Terminal({ initialCommand, onExit, active = true, mobile
         const groups = [
           ['Files', ['ls', 'cd', 'cat', 'open', 'pwd', 'mkdir', 'touch', 'echo']],
           ['Portfolio', ['recruiter', 'mail', 'neofetch', 'nmap', 'msfconsole', 'resume', 'contact', 'github', 'weather']],
-          ['Desktop apps', ['kali-vm', 'firefox', 'thunar', 'mousepad']],
+          ['Desktop apps', ['kali-vm', 'firefox', 'thunar', 'mousepad', 'settings', 'top']],
           ['System', ['whoami', 'uname', 'ifconfig', 'date', 'history', 'clear', 'sudo', 'matrix', 'reboot', 'exit']],
         ];
         return {
@@ -412,6 +414,17 @@ export default function Terminal({ initialCommand, onExit, active = true, mobile
         }
         return { out: <div className={DIM}>Opening {displayPath(path)} ...</div> };
       }
+
+      case 'settings':
+      case 'xfce4-settings':
+        os.openApp('settings');
+        return { out: <div className={DIM}>Opening settings ...</div> };
+
+      case 'top':
+      case 'htop':
+      case 'sysmon':
+        os.openApp('sysmon');
+        return { out: <div className={DIM}>Opening the system monitor ...</div> };
 
       case 'mail':
       case 'sendmail':
