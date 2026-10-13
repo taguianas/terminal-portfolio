@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { Search, Lock, LogOut, Settings, Star, Clock3, LayoutGrid, Radar, Bug, Globe, Database, KeyRound, Wifi, Cpu, Crosshair, Network, Terminal as TermI, Fingerprint, FileText, Users, Wrench } from 'lucide-react';
+import { Search, Lock, LogOut, Settings, Star, Clock3, LayoutGrid, Radar, Bug, Globe, Database, KeyRound, Wifi, Cpu, Crosshair, Network, Terminal as TermI, Fingerprint, FileText, Users, Wrench, ShieldHalf } from 'lucide-react';
 import { CONFIG } from '../config';
 import { Logo } from '../components/Icons';
 import { PANEL_H } from './Window';
@@ -18,30 +18,33 @@ export function buildMenu(act) {
     about: { name: 'whoami', desc: 'About me (about.txt)', Icon: I(Fingerprint, '#5aa2ff'), run: () => act.file('about.txt') },
     nmap: { name: 'nmap', desc: 'Scan my skills (nmap anas)', Icon: I(Radar, '#4fd16b'), run: () => act.cmd(`nmap ${CONFIG.host}`) },
     skills: { name: 'skills.md', desc: 'Languages and tools', Icon: I(Cpu, '#c678dd'), run: () => act.file('skills.md') },
-    edu: { name: 'education', desc: 'ESAIP and Warsaw exchange', Icon: I(Database, '#56b6c2'), run: () => act.file('education.txt') },
+    experience: { name: 'experience', desc: 'EUTECH, Orange, Ministry', Icon: I(Database, '#56b6c2'), run: () => act.file('experience.txt') },
+    edu: { name: 'education', desc: 'ESAIP, La Salle, Warsaw', Icon: I(Database, '#56b6c2'), run: () => act.file('education.txt') },
     msf: { name: 'metasploit framework', desc: 'My projects as exploit modules', Icon: I(Crosshair, '#ff6b6b'), run: () => act.cmd('msfconsole') },
     projects: { name: 'projects', desc: 'Open the projects folder', Icon: I(Bug, '#ff6b6b'), run: () => act.folder('projects') },
+    labs: { name: 'labs', desc: 'CTF write-ups and security labs', Icon: I(Crosshair, '#ff6b6b'), run: () => act.folder('labs') },
+    phishguard: { name: 'PhishGuard-AI', desc: 'Anti-phishing detection', Icon: I(ShieldHalf, '#4fd16b'), run: () => act.file('projects/PhishGuard-AI.txt') },
+    soclab: { name: 'SOC Home Lab', desc: 'SIEM/SOAR homelab', Icon: I(Radar, '#5aa2ff'), run: () => act.file('projects/SOC-Home-Lab.txt') },
     securecrypt: { name: 'SecureCrypt', desc: 'AES-GCM / RSA-OAEP platform', Icon: I(KeyRound, '#e5c07b'), run: () => act.file('projects/SecureCrypt.txt') },
-    snooker: { name: 'Snooker Shoot-Out', desc: 'Live tournament web app', Icon: I(Globe, '#4fd16b'), run: () => act.url('https://shootoutangers.netlify.app/') },
+    certs: { name: 'certifications', desc: 'CEH, Google, TryHackMe', Icon: I(ShieldHalf, '#e5c07b'), run: () => act.file('certifications.txt') },
     github: { name: 'github', desc: 'Live repositories via the API', Icon: I(Network, '#e6e6e6'), run: () => act.cmd('github') },
     wifi: { name: 'ifconfig', desc: 'Network interfaces', Icon: I(Wifi, '#56b6c2'), run: () => act.cmd('ifconfig') },
     resume: { name: 'resume.pdf', desc: 'Read or download my resume', Icon: I(FileText, '#e5484d'), run: () => act.file('resume.pdf') },
     contact: { name: 'contact', desc: 'Email, LinkedIn, GitHub', Icon: I(Users, '#5aa2ff'), run: () => act.file('contact.info') },
-    volunteering: { name: 'volunteering', desc: 'Cop1 Angers and more', Icon: I(Users, '#4fd16b'), run: () => act.file('volunteering.txt') },
     neofetch: { name: 'neofetch', desc: 'System information', Icon: I(Settings, '#9aa3b2'), run: () => act.cmd('neofetch') },
   };
   const cats = [
     ['Favorites', Star, ['recruiter', 'kalivm', 'terminal', 'files', 'firefox', 'about', 'resume', 'contact']],
     ['Recently Used', Clock3, ['about', 'nmap', 'msf']],
     ['All Applications', LayoutGrid, Object.keys(items)],
-    ['01 - Information Gathering', Radar, ['about', 'nmap', 'edu']],
-    ['02 - Vulnerability Analysis', Bug, ['skills']],
-    ['03 - Web Application Analysis', Globe, ['snooker', 'firefox']],
-    ['05 - Password Attacks', KeyRound, ['securecrypt']],
+    ['01 - Information Gathering', Radar, ['about', 'nmap', 'experience', 'edu']],
+    ['02 - Vulnerability Analysis', Bug, ['skills', 'soclab']],
+    ['03 - Web Application Analysis', Globe, ['securecrypt', 'phishguard', 'firefox']],
+    ['05 - Password Attacks', KeyRound, ['securecrypt', 'labs']],
     ['06 - Wireless Attacks', Wifi, ['wifi']],
-    ['08 - Exploitation Tools', Crosshair, ['msf', 'projects', 'github']],
-    ['12 - Reporting Tools', FileText, ['resume', 'volunteering']],
-    ['13 - Social Engineering Tools', Users, ['contact']],
+    ['08 - Exploitation Tools', Crosshair, ['msf', 'projects', 'labs', 'github']],
+    ['12 - Reporting Tools', FileText, ['resume', 'certs']],
+    ['13 - Social Engineering Tools', Users, ['phishguard', 'contact']],
     ['Usual Applications', Wrench, ['kalivm', 'terminal', 'files', 'firefox', 'editor', 'neofetch']],
   ];
   return { items, cats };

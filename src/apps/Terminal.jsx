@@ -176,14 +176,14 @@ function Neofetch() {
 }
 
 const NMAP_PORTS = [
-  ['22/tcp', 'python', 'Python / Bash scripting'],
-  ['80/tcp', 'http', 'JavaScript / React'],
-  ['443/tcp', 'https', 'HTML / Tailwind CSS'],
-  ['1337/tcp', 'c-cpp', 'C / C++'],
-  ['2375/tcp', 'docker', 'Docker / Kubernetes'],
-  ['4444/tcp', 'metasploit', 'Metasploit / Burp Suite'],
-  ['8443/tcp', 'crypto', 'AES-GCM / RSA-OAEP (SecureCrypt)'],
-  ['9001/tcp', 'wireshark', 'Wireshark packet analysis'],
+  ['514/tcp', 'wazuh-siem', 'Wazuh, Splunk, TheHive, Shuffle (SOC / SIEM / SOAR)'],
+  ['4444/tcp', 'metasploit', 'Metasploit, Burp Suite, Nmap, Nessus, Hydra'],
+  ['53/tcp', 'dns', 'DNS, DHCP, VLAN, firewalls, Wireshark, Cisco'],
+  ['22/tcp', 'python', 'Python, Bash, PowerShell, JavaScript, Java'],
+  ['2375/tcp', 'docker', 'Linux/Kali, Windows Server, Active Directory, Docker'],
+  ['1337/tcp', 'forensics', 'Ghidra, x64dbg, Autopsy (forensics / malware)'],
+  ['8443/tcp', 'appsec', 'AES-GCM / RSA-OAEP, OWASP Top 10 (SecureCrypt)'],
+  ['9001/tcp', 'frameworks', 'MITRE ATT&CK, OWASP Top 10, ISO 27001, NIST'],
 ];
 
 function nmapOutput(target) {
@@ -211,23 +211,26 @@ Nmap done: 1 IP address (1 host up) scanned in 0.42 seconds`;
 
 const MSF = `
        =[ metasploit v6.4.71-dev                          ]
-+ -- --=[ 3 exploits - 0 auxiliary - 0 payloads           ]
++ -- --=[ 7 modules - 0 auxiliary - 0 payloads            ]
 + -- --=[ all written by ${CONFIG.fullName.padEnd(30)}]
 
 msf6 > show exploits
 
-Exploits
-========
+Modules
+=======
 
-   #  Name                         Rank       Description
-   -  ----                         ----       -----------
-   0  exploit/web/securecrypt      excellent  E2E encryption (AES-GCM, RSA-OAEP)
-   1  exploit/web/snooker_shootout great      Snooker tournament app (React)
-   2  exploit/web/kali_portfolio   excellent  This Kali desktop (React)
+   #  Name                          Rank       Description
+   -  ----                          ----       -----------
+   0  blue_team/phishguard          excellent  Anti-phishing detection (Python, VirusTotal, XGBoost)
+   1  blue_team/soc_home_lab        great      SIEM/SOAR homelab (Wazuh, TheHive, Shuffle)
+   2  offensive/kali_mcp_server     excellent  MCP server exposing 18+ Kali tools to AI clients
+   3  appsec/securecrypt            excellent  End-to-end encryption (AES-GCM, RSA-OAEP)
+   4  offensive/redteam_framework   great      Modular reverse shells, MITRE ATT&CK
+   5  sysadmin/admin_script         normal     Linux/Windows audit automation
+   6  web/kali_portfolio            excellent  This Kali desktop + real VM (React, CheerpX)
 
-msf6 > info 0   ->  cat ~/projects/SecureCrypt.txt
-msf6 > info 1   ->  cat ~/projects/snooker-shootout.txt
-msf6 > info 2   ->  cat ~/projects/kali-portfolio.txt
+msf6 > info 0   ->  cat ~/projects/PhishGuard-AI.txt
+msf6 > info 1   ->  cat ~/projects/SOC-Home-Lab.txt
 msf6 > exit`;
 
 function tokenize(line) {

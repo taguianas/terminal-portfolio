@@ -15,158 +15,11 @@ const dir = (children = {}, extra = {}) => ({ type: 'dir', children, ...extra })
 
 export const HOME = ['home', CONFIG.user];
 
-const README = `
- Welcome to ${CONFIG.host}'s machine
- ===========================
-
- You just logged into my portfolio. It works like a real
- Kali Linux desktop, so use it the way you prefer:
-
-   * Mouse:    double-click the icons on the desktop
-               (about.txt, projects, resume.pdf ...)
-   * Terminal: type "help" to see every command
-               try:  ls   cat about.txt   nmap anas
-   * Real Kali: double-click "Kali Linux (real VM)" or
-               type kali-vm. It boots a genuine Kali
-               (i386) inside your browser, with real
-               nmap, radare2, python3 ... and a mini CTF.
-
- Quick links
-   About me ........ about.txt
-   Skills .......... skills.md
-   Projects ........ projects/
-   Resume (PDF) .... resume.pdf
-   Contact ......... contact.info
-
- Have fun, and look around: there are a few hidden things.
-`;
-
-const ABOUT = `
-Hello, friend.
-
-I am ${CONFIG.fullName}, a cybersecurity engineering student and
-full stack developer.
-
-I am in my fourth year of engineering studies at ESAIP (Angers,
-France), specializing in cybersecurity and networks, and I am
-looking for a work-study program (alternance).
-
-I like technical challenges in security and networks, and I want
-to help keep your projects secure.
-
-Next:  cat skills.md   |   ls projects   |   open resume.pdf
-`;
-
-const SKILLS = `
-# Skills
-
-## Languages
-- Python / Bash
-- JavaScript / React
-- C / C++
-- HTML / Tailwind CSS
-
-## Security tools
-- Metasploit / Burp Suite
-- Wireshark
-
-## DevOps
-- Docker / Kubernetes
-
-## Cryptography
-- AES-GCM, RSA-OAEP, digital signatures (see projects/SecureCrypt.txt)
-
-Tip: run "nmap anas" in the terminal for another view of this file.
-`;
-
-const EDUCATION = `
-ESAIP, Angers, France
-  Computer Engineering Program  |  2024 - 2027 (ongoing)
-  Specialization in Cybersecurity and Networks.
-
-Politechnika Warszawska, Warsaw, Poland
-  University Exchange  |  February 2025 - July 2025
-  Software Engineering, Cryptography, Databases,
-  Computer Networks and Operating Systems.
-`;
-
-const VOLUNTEERING = `
-Cop1 Angers
-  Food Distribution Volunteer  |  September 2024 - Present
-  Food distribution for Cop1 - Student Solidarity in Angers:
-  logistics, welcoming students and distributing supplies.
-
-Snooker club (affiliated with FFB)
-  Built the Snooker Shoot-Out web app for the club.
-  See projects/snooker-shootout.txt
-`;
-
-const CONTACT = `
-Secure comm channels
---------------------
-Email ..... ${CONFIG.email}
-LinkedIn .. ${CONFIG.linkedin}
-GitHub .... https://github.com/${CONFIG.github}
-
-Open to work-study (alternance) opportunities in
-cybersecurity, networks and systems.
-`;
-
-const SECURECRYPT = `
-SecureCrypt - End-to-End Encryption Platform
-============================================
-Stack: MERN (MongoDB, Express, React, Node.js), Tailwind CSS,
-       Node.js native crypto module
-
-A full stack web application for secure text encryption,
-decryption and digital signing directly from the browser.
-It implements industry-standard algorithms (AES-GCM and
-RSA-OAEP) to demonstrate secure data handling and
-authenticity verification.
-
-Code: https://github.com/${CONFIG.github}/encryption-app
-`;
-
-const SNOOKER = `
-Snooker Shoot-Out - Tournament App
-==================================
-Stack: React.js
-
-Web application built for a snooker club (affiliated with
-FFB) to run "Shoot-Out" tournaments. It manages the match
-timer, the shot clock, the score and fouls in real time
-with a dynamic interface.
-
-Live: https://shootoutangers.netlify.app/
-`;
-
-const PORTFOLIO = `
-Kali Desktop Portfolio (this website)
-=====================================
-Stack: React, Tailwind CSS, Vite
-
-A simulated Kali Linux machine running in the browser:
-boot loader, login screen, Xfce-style desktop, window
-manager, file manager, text editor, document viewer,
-browser and a zsh-like terminal sharing one virtual
-file system.
-
-Code: https://github.com/${CONFIG.github}/terminal-portfolio
-`;
-
-const ZSH_HISTORY = `
-sudo apt update && sudo apt full-upgrade -y
-nmap -sV 10.10.10.0/24
-cd ~/projects
-git push origin main
-echo "hire me" > /dev/recruiter
-`;
-
-const FLAG = `
-FLAG{y0u_f0und_th3_h1dd3n_f1l3}
-
-Nice recon. Mention this flag when you contact me ;)
-`;
+import {
+  README, ABOUT, SKILLS, EXPERIENCE, EDUCATION, CERTIFICATIONS, CONTACT,
+  P_PHISHGUARD, P_SOCLAB, P_MCP, P_SECURECRYPT, P_REDTEAM, P_ADMIN, P_PORTFOLIO,
+  README_LABS, L_ENDGAME, L_OWASP, L_SMURF, ZSH_HISTORY, FLAG,
+} from './content.js';
 
 export const INITIAL_FS = dir({
   bin: dir(),
@@ -187,15 +40,26 @@ ID_LIKE=debian
     [CONFIG.user]: dir({
       'README.txt': file(README),
       'about.txt': file(ABOUT),
+      'experience.txt': file(EXPERIENCE),
       'skills.md': file(SKILLS),
       'education.txt': file(EDUCATION),
-      'volunteering.txt': file(VOLUNTEERING),
+      'certifications.txt': file(CERTIFICATIONS),
       'contact.info': file(CONTACT),
       'resume.pdf': { type: 'pdf', src: CONFIG.resume },
       projects: dir({
-        'SecureCrypt.txt': file(SECURECRYPT),
-        'snooker-shootout.txt': file(SNOOKER),
-        'kali-portfolio.txt': file(PORTFOLIO),
+        'PhishGuard-AI.txt': file(P_PHISHGUARD),
+        'SOC-Home-Lab.txt': file(P_SOCLAB),
+        'Kali-MCP-Server.txt': file(P_MCP),
+        'SecureCrypt.txt': file(P_SECURECRYPT),
+        'RedTeam-Framework.txt': file(P_REDTEAM),
+        'Admin-Script.txt': file(P_ADMIN),
+        'kali-portfolio.txt': file(P_PORTFOLIO),
+      }),
+      labs: dir({
+        'README.txt': file(README_LABS),
+        'endgame-ad.txt': file(L_ENDGAME),
+        'owasp-web.txt': file(L_OWASP),
+        'smurf-dos.txt': file(L_SMURF),
       }),
       '.zsh_history': file(ZSH_HISTORY),
       '.flag.txt': file(FLAG),
