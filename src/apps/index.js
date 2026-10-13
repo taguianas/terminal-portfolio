@@ -1,13 +1,18 @@
+import { lazy } from 'react';
 import Terminal from './Terminal';
-import FileManager from './FileManager';
-import TextEditor from './TextEditor';
-import PdfViewer from './PdfViewer';
-import Browser from './Browser';
-import KaliVM from './KaliVM';
-import Mail from './Mail';
-import Settings from './Settings';
-import SystemMonitor from './SystemMonitor';
 import { TerminalAppIcon, FolderIcon, EditorAppIcon, DocIcon, BrowserAppIcon, KaliVMIcon, MailIcon, SettingsAppIcon, MonitorAppIcon } from '../components/Icons';
+
+// Terminal is eager (it is the first window at boot). Every other app is
+// code-split and loaded the first time it is opened, so the initial
+// bundle (boot, login, desktop) stays small and paints fast.
+const FileManager = lazy(() => import('./FileManager'));
+const TextEditor = lazy(() => import('./TextEditor'));
+const PdfViewer = lazy(() => import('./PdfViewer'));
+const Browser = lazy(() => import('./Browser'));
+const KaliVM = lazy(() => import('./KaliVM'));
+const Mail = lazy(() => import('./Mail'));
+const Settings = lazy(() => import('./Settings'));
+const SystemMonitor = lazy(() => import('./SystemMonitor'));
 
 const PdfIcon = (p) => DocIcon({ ...p, ext: 'pdf' });
 

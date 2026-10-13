@@ -1,4 +1,4 @@
-import { useState, useRef, useCallback, useMemo, useEffect } from 'react';
+import { useState, useRef, useCallback, useMemo, useEffect, Suspense } from 'react';
 import { TerminalSquare, FolderOpen, FilePlus, Info } from 'lucide-react';
 import { OSContext } from './OSContext';
 import Window, { PANEL_H } from './Window';
@@ -171,17 +171,36 @@ export default function Desktop({ base }) {
     }
   }, [openApp]);
 
-  // Ctrl+Alt+T opens a terminal, like on Kali.
+  // Keyboard shortcuts, like on a real Xfce desktop.
   useEffect(() => {
     const onKey = (e) => {
-      if (e.ctrlKey && e.altKey && e.key.toLowerCase() === 't') {
+      const k = e.key.toLowerCase();
+      // Ctrl+Alt+T: open a terminal
+      if (e.ctrlKey && e.altKey && k === 't') { e.preventDefault(); openApp('terminal'); return; }
+      // Super (Windows/Cmd) key: toggle the application menu
+      if (k === 'meta' || k === 'os' || k === 'super') { e.preventDefault(); setMenuOpen((o) => !o); return; }
+      // Alt+F4: close the active window
+      if (e.altKey && k === 'f4') { e.preventDefault(); if (activeId != null) close(activeId); return; }
+      // Alt+Tab / Alt+Shift+Tab: cycle through windows on this workspace
+      if (e.altKey && k === 'tab') {
         e.preventDefault();
-        openApp('terminal');
+        const ws = winsRef.current.filter((w) => w.ws === wsRef.current && !w.minimized).sort((a, b) => a.id - b.id);
+        if (ws.length < 2) { if (ws[0]) focus(ws[0].id); return; }
+        const idx = ws.findIndex((w) => w.id === activeId);
+        const next = ws[(idx + (e.shiftKey ? -1 : 1) + ws.length) % ws.length];
+        focus(next.id);
+        return;
+      }
+      // Super+D: show the desktop (minimize everything)
+      if (e.ctrlKey && e.altKey && k === 'd') {
+        e.preventDefault();
+        setWins((list) => list.map((w) => (w.ws === wsRef.current ? { ...w, minimized: true } : w)));
+        setActiveId(null);
       }
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
-  }, [openApp]);
+  }, [openApp, activeId, close, focus]);
 
   // --------------------------- desktop icons ------------------------
   const home = getNode(base.fs, HOME);
@@ -257,7 +276,9 @@ export default function Desktop({ base }) {
                 onToggleMax={() => update(w.id, { maximized: !w.maximized })}
                 onChange={(patch) => update(w.id, patch)}
               >
-                <C {...w.props} active={active} setTitle={titleSetter(w.id)} onExit={() => close(w.id)} />
+                <Suspense fallback={<div className="h-full flex items-center justify-center bg-[#1b1e26] text-[#8b93a3] text-[13px]">Loading…</div>}>
+                  <C {...w.props} active={active} setTitle={titleSetter(w.id)} onExit={() => close(w.id)} />
+                </Suspense>
               </Window>
             </div>
           );

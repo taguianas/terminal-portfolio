@@ -1,11 +1,11 @@
-import { useState, useCallback, useMemo, useEffect } from 'react';
+import { useState, useCallback, useMemo, useEffect, lazy, Suspense } from 'react';
 import { INITIAL_FS, updateAt } from './data/fs';
 import { BootLogs, Login, PoweredOff, KernelPanic, Matrix } from './os/Boot';
 import Grub from './os/Grub';
 import { getFirmware } from './os/firmware';
 import Desktop from './os/Desktop';
 import MobileShell from './os/MobileShell';
-import Recruiter from './recruiter/Recruiter';
+const Recruiter = lazy(() => import('./recruiter/Recruiter'));
 
 const KEY = 'kali-portfolio-booted';
 const store = {
@@ -99,7 +99,7 @@ export default function App() {
   return (
     <>
       {(!recruiter || stage === 'desktop' || stage === 'lock') && screen}
-      {recruiter && <Recruiter onExit={closeRecruiter} />}
+      {recruiter && <Suspense fallback={<div className="fixed inset-0 z-[300000] bg-[#f6f7f9]" />}><Recruiter onExit={closeRecruiter} /></Suspense>}
       {matrix && <Matrix onExit={exitMatrix} />}
       {crashed && <KernelPanic />}
     </>
