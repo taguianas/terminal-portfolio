@@ -35,6 +35,7 @@ export const COMMANDS = {
   mail: 'Open the mail app to contact me',
   settings: 'Open the settings app',
   top: 'Open the system monitor',
+  wireshark: 'Open the packet capture viewer',
   'kali-vm': 'Boot a REAL Kali Linux in your browser',
   firefox: 'Open the browser (firefox [url])',
   thunar: 'Open the file manager',
@@ -419,6 +420,12 @@ export default function Terminal({ initialCommand, onExit, active = true, mobile
       case 'xfce4-settings':
         os.openApp('settings');
         return { out: <div className={DIM}>Opening settings ...</div> };
+
+      case 'wireshark':
+      case 'tshark':
+      case 'tcpdump':
+        os.openApp('wireshark');
+        return { out: <div className={DIM}>Opening Wireshark ...</div> };
 
       case 'top':
       case 'htop':

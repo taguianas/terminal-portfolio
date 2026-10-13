@@ -11,6 +11,7 @@ export function buildMenu(act) {
   const items = {
     recruiter: { name: 'Recruiter view', desc: 'One-page profile: experience, projects, resume', Icon: I(Users, '#367bf0'), run: () => act.recruiter() },
     settings: { name: 'Settings', desc: 'Wallpaper, sound, about', Icon: I(Settings, '#9aa3b2'), run: () => act.app('settings') },
+    wireshark: { name: 'Wireshark', desc: 'Inspect a sample network capture', Icon: I(Radar, '#1a7fc4'), run: () => act.app('wireshark') },
     sysmon: { name: 'System Monitor', desc: 'Live CPU, memory and processes', Icon: I(Cpu, '#4fd16b'), run: () => act.app('sysmon') },
     mail: { name: 'Mail', desc: 'Send me a message by email', Icon: I(Users, '#2d7cf0'), run: () => act.app('mail') },
     kalivm: { name: 'Kali Linux (real VM)', desc: 'A real Kali booted in your browser', Icon: I(TermI, '#5aa2ff'), run: () => act.app('kalivm') },
@@ -43,6 +44,7 @@ export function buildMenu(act) {
     ['01 - Information Gathering', Radar, ['about', 'nmap', 'experience', 'edu']],
     ['02 - Vulnerability Analysis', Bug, ['skills', 'soclab']],
     ['03 - Web Application Analysis', Globe, ['securecrypt', 'phishguard', 'firefox']],
+    ['04 - Sniffing & Spoofing', Radar, ['wireshark']],
     ['05 - Password Attacks', KeyRound, ['securecrypt', 'labs']],
     ['06 - Wireless Attacks', Wifi, ['wifi']],
     ['08 - Exploitation Tools', Crosshair, ['msf', 'projects', 'labs', 'github']],

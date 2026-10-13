@@ -57,6 +57,17 @@ export function KaliVMIcon({ size = 48 }) {
   );
 }
 
+export function SharkIcon({ size = 48 }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 48 48">
+      <circle cx="24" cy="24" r="20" fill="#1a7fc4" />
+      <path d="M24 8c-3 6-3 10 0 14 2-1 5-1 7 1-1-6-3-11-7-15z" fill="#eaf4ff" />
+      <path d="M12 26c4 2 8 2 12 0 4 2 8 2 12 0-2 6-6 10-12 10s-10-4-12-10z" fill="#0f5e95" />
+      <circle cx="20" cy="20" r="2" fill="#0f2740" />
+    </svg>
+  );
+}
+
 export function SettingsAppIcon({ size = 48 }) {
   return (
     <svg width={size} height={size} viewBox="0 0 48 48">

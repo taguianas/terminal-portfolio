@@ -1,6 +1,6 @@
 import { lazy } from 'react';
 import Terminal from './Terminal';
-import { TerminalAppIcon, FolderIcon, EditorAppIcon, DocIcon, BrowserAppIcon, KaliVMIcon, MailIcon, SettingsAppIcon, MonitorAppIcon } from '../components/Icons';
+import { TerminalAppIcon, FolderIcon, EditorAppIcon, DocIcon, BrowserAppIcon, KaliVMIcon, MailIcon, SettingsAppIcon, MonitorAppIcon, SharkIcon } from '../components/Icons';
 
 // Terminal is eager (it is the first window at boot). Every other app is
 // code-split and loaded the first time it is opened, so the initial
@@ -13,6 +13,7 @@ const KaliVM = lazy(() => import('./KaliVM'));
 const Mail = lazy(() => import('./Mail'));
 const Settings = lazy(() => import('./Settings'));
 const SystemMonitor = lazy(() => import('./SystemMonitor'));
+const PacketViewer = lazy(() => import('./PacketViewer'));
 
 const PdfIcon = (p) => DocIcon({ ...p, ext: 'pdf' });
 
@@ -25,5 +26,6 @@ export const APPS = {
   settings: { title: 'Settings', Icon: SettingsAppIcon, Component: Settings, size: [640, 460], single: true },
   sysmon: { title: 'System Monitor', Icon: MonitorAppIcon, Component: SystemMonitor, size: [720, 520], single: true },
   mail: { title: 'Mail', Icon: MailIcon, Component: Mail, size: [640, 560], single: true },
+  wireshark: { title: 'Wireshark', Icon: SharkIcon, Component: PacketViewer, size: [900, 580], single: true },
   browser: { title: 'Firefox ESR', Icon: BrowserAppIcon, Component: Browser, size: [1000, 640] },
 };
