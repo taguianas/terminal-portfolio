@@ -18,6 +18,13 @@ export const CONFIG = {
   email: 'atagui.ir2027@esaip.org',
   github: 'taguianas',
   linkedin: 'https://www.linkedin.com/in/taguianas',
+  tryhackme: 'https://tryhackme.com/p/anastagui',
+
+  // Contact form (the Mail app). Create a free form at https://formspree.io,
+  // then paste its endpoint here (e.g. 'https://formspree.io/f/abcdwxyz').
+  // Leave empty and the Mail app falls back to opening the visitor's email
+  // client with a prefilled message instead.
+  contactEndpoint: '',
 
   osName: 'Kali GNU/Linux Rolling',
 

@@ -57,6 +57,16 @@ export function KaliVMIcon({ size = 48 }) {
   );
 }
 
+export function MailIcon({ size = 48 }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 48 48">
+      <rect x="5" y="11" width="38" height="26" rx="4" fill="#2d7cf0" />
+      <path d="M6 13l18 13 18-13" fill="none" stroke="#eaf2ff" strokeWidth="3" strokeLinejoin="round" />
+      <path d="M5 35l13-11M43 35L30 24" stroke="#1d4fae" strokeWidth="2.5" fill="none" />
+    </svg>
+  );
+}
+
 export function RecruiterIcon({ size = 48 }) {
   return (
     <svg width={size} height={size} viewBox="0 0 48 48">

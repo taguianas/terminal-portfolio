@@ -6,7 +6,7 @@ import Panel from './Panel';
 import AppMenu, { buildMenu } from './AppMenu';
 import { APPS } from '../apps';
 import { HOME, getNode, listDir } from '../data/fs';
-import { NodeIcon, DriveIcon, HomeIcon, TrashIcon, TerminalAppIcon, KaliVMIcon, RecruiterIcon } from '../components/Icons';
+import { NodeIcon, DriveIcon, HomeIcon, TrashIcon, TerminalAppIcon, KaliVMIcon, RecruiterIcon, MailIcon } from '../components/Icons';
 import { wallpaperStyle } from './wallpaper';
 import { play } from './sound';
 import { X as XIcon, Bell as BellIcon } from 'lucide-react';
@@ -197,6 +197,7 @@ export default function Desktop({ base }) {
     { key: 'term', label: 'Terminal', Icon: TerminalAppIcon, open: () => openApp('terminal') },
     { key: 'kalivm', label: 'Kali Linux (real VM)', Icon: KaliVMIcon, open: () => openApp('kalivm') },
     { key: 'recruiter', label: 'Recruiter view', Icon: RecruiterIcon, open: () => base.recruiter() },
+    { key: 'mail', label: 'Contact me', Icon: MailIcon, open: () => openApp('mail') },
   ];
 
   const visible = wins.filter((w) => w.ws === workspace);

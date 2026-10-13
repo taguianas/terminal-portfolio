@@ -10,6 +10,7 @@ export function buildMenu(act) {
   const I = (Icon, color) => function MenuIcon() { return <Icon size={22} color={color} />; };
   const items = {
     recruiter: { name: 'Recruiter view', desc: 'One-page profile: experience, projects, resume', Icon: I(Users, '#367bf0'), run: () => act.recruiter() },
+    mail: { name: 'Mail', desc: 'Send me a message by email', Icon: I(Users, '#2d7cf0'), run: () => act.app('mail') },
     kalivm: { name: 'Kali Linux (real VM)', desc: 'A real Kali booted in your browser', Icon: I(TermI, '#5aa2ff'), run: () => act.app('kalivm') },
     terminal: { name: 'Terminal Emulator', desc: 'Use the command line', Icon: I(TermI, '#4fd16b'), run: () => act.app('terminal') },
     files: { name: 'File Manager', desc: 'Browse the file system', Icon: I(LayoutGrid, '#5aa2ff'), run: () => act.app('files') },
@@ -34,7 +35,7 @@ export function buildMenu(act) {
     neofetch: { name: 'neofetch', desc: 'System information', Icon: I(Settings, '#9aa3b2'), run: () => act.cmd('neofetch') },
   };
   const cats = [
-    ['Favorites', Star, ['recruiter', 'kalivm', 'terminal', 'files', 'firefox', 'about', 'resume', 'contact']],
+    ['Favorites', Star, ['recruiter', 'mail', 'kalivm', 'terminal', 'files', 'firefox', 'about', 'resume', 'contact']],
     ['Recently Used', Clock3, ['about', 'nmap', 'msf']],
     ['All Applications', LayoutGrid, Object.keys(items)],
     ['01 - Information Gathering', Radar, ['about', 'nmap', 'experience', 'edu']],
@@ -44,7 +45,7 @@ export function buildMenu(act) {
     ['06 - Wireless Attacks', Wifi, ['wifi']],
     ['08 - Exploitation Tools', Crosshair, ['msf', 'projects', 'labs', 'github']],
     ['12 - Reporting Tools', FileText, ['resume', 'certs']],
-    ['13 - Social Engineering Tools', Users, ['phishguard', 'contact']],
+    ['13 - Social Engineering Tools', Users, ['phishguard', 'contact', 'mail']],
     ['Usual Applications', Wrench, ['kalivm', 'terminal', 'files', 'firefox', 'editor', 'neofetch']],
   ];
   return { items, cats };

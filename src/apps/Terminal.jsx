@@ -32,6 +32,7 @@ export const COMMANDS = {
   resume: 'Open and download my resume',
   contact: 'How to reach me',
   recruiter: 'One-page profile for recruiters',
+  mail: 'Open the mail app to contact me',
   'kali-vm': 'Boot a REAL Kali Linux in your browser',
   firefox: 'Open the browser (firefox [url])',
   thunar: 'Open the file manager',
@@ -278,7 +279,7 @@ export default function Terminal({ initialCommand, onExit, active = true, mobile
       case 'help': {
         const groups = [
           ['Files', ['ls', 'cd', 'cat', 'open', 'pwd', 'mkdir', 'touch', 'echo']],
-          ['Portfolio', ['recruiter', 'neofetch', 'nmap', 'msfconsole', 'resume', 'contact', 'github', 'weather']],
+          ['Portfolio', ['recruiter', 'mail', 'neofetch', 'nmap', 'msfconsole', 'resume', 'contact', 'github', 'weather']],
           ['Desktop apps', ['kali-vm', 'firefox', 'thunar', 'mousepad']],
           ['System', ['whoami', 'uname', 'ifconfig', 'date', 'history', 'clear', 'sudo', 'matrix', 'reboot', 'exit']],
         ];
@@ -411,6 +412,11 @@ export default function Terminal({ initialCommand, onExit, active = true, mobile
         }
         return { out: <div className={DIM}>Opening {displayPath(path)} ...</div> };
       }
+
+      case 'mail':
+      case 'sendmail':
+        os.openApp('mail');
+        return { out: <div className={DIM}>Opening the mail app ...</div> };
 
       case 'recruiter':
       case 'hire':
