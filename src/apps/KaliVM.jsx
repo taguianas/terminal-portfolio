@@ -3,6 +3,7 @@ import { Cpu, HardDrive, WifiOff } from 'lucide-react';
 import '@xterm/xterm/css/xterm.css';
 import { CONFIG } from '../config';
 import { useOS } from '../os/OSContext';
+import { getFirmware } from '../os/firmware';
 
 // A real Kali Linux (i386) booted in the browser with CheerpX.
 // The disk image is streamed from GitHub Pages in 128 KB chunks,
@@ -72,6 +73,15 @@ export default function KaliVM({ active, setTitle }) {
       const say = (s = '') => term.write(s + '\r\n');
 
       say(`${B} Starting a real Kali Linux (i386) inside your browser ...`);
+
+      if (!getFirmware().vtx) {
+        say(`${ERR} kvm: VT-x is disabled in the firmware (BIOS/UEFI).`);
+        say('    The virtual machine cannot start without hardware virtualization.');
+        say('    Restart, open GRUB > UEFI Firmware Settings > Advanced and enable');
+        say('    "Intel Virtualization Technology", then Save Changes.');
+        setStatus('error');
+        return;
+      }
 
       if (!window.crossOriginIsolated) {
         say(`${ERR} This page is not cross-origin isolated, so the VM cannot start.`);

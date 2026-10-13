@@ -1,3 +1,4 @@
+import { getFirmware } from './firmware';
 // Tiny system sounds made with the Web Audio API (no audio files).
 // The volume comes from the panel's volume control.
 
@@ -40,7 +41,7 @@ const SOUNDS = {
 };
 
 export function play(name = 'notify') {
-  if (state.muted || state.level <= 0) return;
+  if (state.muted || state.level <= 0 || !getFirmware().audio) return;
   try {
     ctx = ctx || new (window.AudioContext || window.webkitAudioContext)();
     if (ctx.state === 'suspended') ctx.resume();
