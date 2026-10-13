@@ -57,6 +57,17 @@ export function KaliVMIcon({ size = 48 }) {
   );
 }
 
+export function RecruiterIcon({ size = 48 }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 48 48">
+      <rect x="6" y="14" width="36" height="26" rx="4" fill="#367bf0" />
+      <path d="M18 14v-3a3 3 0 0 1 3-3h6a3 3 0 0 1 3 3v3" fill="none" stroke="#1d4fae" strokeWidth="3" />
+      <rect x="6" y="22" width="36" height="4" fill="#2a63c9" />
+      <rect x="21" y="20" width="6" height="8" rx="1.5" fill="#eef4ff" />
+    </svg>
+  );
+}
+
 export function BrowserAppIcon({ size = 48 }) {
   return (
     <svg width={size} height={size} viewBox="0 0 48 48">

@@ -25,3 +25,11 @@ body.wm-dragging iframe { pointer-events: none; }
 @media (prefers-reduced-motion: reduce) {
   .wm-open { animation: none; }
 }
+
+/* Recruiter view: print as a clean document */
+@media print {
+  html, body, #root { height: auto; overflow: visible; background: #fff; }
+  #root > *:not(.recruiter-root) { display: none !important; }
+  .recruiter-root { position: static !important; overflow: visible !important; background: #fff !important; }
+  .recruiter-root section { break-inside: avoid-page; }
+}

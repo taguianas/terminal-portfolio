@@ -5,6 +5,7 @@ import Grub from './os/Grub';
 import { getFirmware } from './os/firmware';
 import Desktop from './os/Desktop';
 import MobileShell from './os/MobileShell';
+import Recruiter from './recruiter/Recruiter';
 
 const KEY = 'kali-portfolio-booted';
 const store = {
@@ -15,6 +16,7 @@ const store = {
 const isSmall = () => window.innerWidth < 768;
 // "Fast Boot" can be switched on in the UEFI settings (GRUB > UEFI Firmware Settings)
 const fastBoot = () => getFirmware().fastBoot;
+const isRecruiterUrl = () => /^\/recruiter\/?$/.test(window.location.pathname) || /[?&#]recruiter\b/.test(window.location.search + window.location.hash);
 
 // Boot flow: grub -> boot -> login -> desktop
 // After the first visit in a tab, the desktop opens straight away.
@@ -26,6 +28,22 @@ export default function App() {
   const [crashed, setCrashed] = useState(false);
   const [matrix, setMatrix] = useState(false);
   const [session, setSession] = useState(0);
+  // Recruiter mode: /recruiter (also the default on phones for a first visit)
+  const [recruiter, setRecruiter] = useState(() => isRecruiterUrl() || (isSmall() && !store.get()));
+
+  const openRecruiter = useCallback(() => {
+    if (!isRecruiterUrl()) window.history.pushState(null, '', '/recruiter');
+    setRecruiter(true);
+  }, []);
+  const closeRecruiter = useCallback(() => {
+    if (isRecruiterUrl()) window.history.pushState(null, '', '/');
+    setRecruiter(false);
+  }, []);
+  useEffect(() => {
+    const onPop = () => setRecruiter(isRecruiterUrl());
+    window.addEventListener('popstate', onPop);
+    return () => window.removeEventListener('popstate', onPop);
+  }, []);
 
   useEffect(() => {
     const onResize = () => setMobile(isSmall());
@@ -54,15 +72,15 @@ export default function App() {
   }, []);
 
   const exitMatrix = useCallback(() => setMatrix(false), []);
-  const base = useMemo(() => ({ fs, updateFs, crash, matrix: () => setMatrix(true), power }), [fs, updateFs, crash, power]);
+  const base = useMemo(() => ({ fs, updateFs, crash, matrix: () => setMatrix(true), power, recruiter: openRecruiter }), [fs, updateFs, crash, power, openRecruiter]);
 
   const login = () => { store.set(true); setStage('desktop'); };
 
   let screen;
   if (stage === 'off') screen = <PoweredOff onPowerOn={() => setStage('grub')} />;
-  else if (stage === 'grub') screen = mobile ? <BootLogs fast onDone={() => setStage('login')} /> : <Grub onDone={(o) => { setBootOpts(o || {}); setStage('boot'); }} />;
+  else if (stage === 'grub') screen = mobile ? <BootLogs fast onDone={() => setStage('login')} /> : <Grub onRecruiter={openRecruiter} onDone={(o) => { setBootOpts(o || {}); setStage('boot'); }} />;
   else if (stage === 'boot') screen = <BootLogs verbose={bootOpts.verbose || !getFirmware().quietBoot} recovery={bootOpts.recovery} onDone={() => setStage('login')} />;
-  else if (stage === 'login' && !mobile) screen = <Login onLogin={login} onPower={power} />;
+  else if (stage === 'login' && !mobile) screen = <Login onLogin={login} onPower={power} onRecruiter={openRecruiter} />;
   else if (mobile) screen = <MobileShell key={session} base={base} />;
   else {
     screen = (
@@ -80,7 +98,8 @@ export default function App() {
 
   return (
     <>
-      {screen}
+      {(!recruiter || stage === 'desktop' || stage === 'lock') && screen}
+      {recruiter && <Recruiter onExit={closeRecruiter} />}
       {matrix && <Matrix onExit={exitMatrix} />}
       {crashed && <KernelPanic />}
     </>

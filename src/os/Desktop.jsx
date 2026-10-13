@@ -6,7 +6,7 @@ import Panel from './Panel';
 import AppMenu, { buildMenu } from './AppMenu';
 import { APPS } from '../apps';
 import { HOME, getNode, listDir } from '../data/fs';
-import { NodeIcon, DriveIcon, HomeIcon, TrashIcon, TerminalAppIcon, KaliVMIcon } from '../components/Icons';
+import { NodeIcon, DriveIcon, HomeIcon, TrashIcon, TerminalAppIcon, KaliVMIcon, RecruiterIcon } from '../components/Icons';
 import { wallpaperStyle } from './wallpaper';
 import { play } from './sound';
 import { X as XIcon, Bell as BellIcon } from 'lucide-react';
@@ -143,9 +143,10 @@ export default function Desktop({ base }) {
         file: (rel) => openPath([...HOME, ...rel.split('/')]),
         folder: (rel) => openPath([...HOME, rel]),
         url: (u) => openUrl(u),
+        recruiter: () => base.recruiter(),
         cmd: (c) => openApp('terminal', { initialCommand: c }),
       }),
-    [openApp, openPath, openUrl],
+    [openApp, openPath, openUrl, base],
   );
 
   // First login: open the README and a terminal.
@@ -195,6 +196,7 @@ export default function Desktop({ base }) {
     })),
     { key: 'term', label: 'Terminal', Icon: TerminalAppIcon, open: () => openApp('terminal') },
     { key: 'kalivm', label: 'Kali Linux (real VM)', Icon: KaliVMIcon, open: () => openApp('kalivm') },
+    { key: 'recruiter', label: 'Recruiter view', Icon: RecruiterIcon, open: () => base.recruiter() },
   ];
 
   const visible = wins.filter((w) => w.ws === workspace);
@@ -289,6 +291,7 @@ export default function Desktop({ base }) {
           onLaunch={(a) => (a === 'browser' ? openUrl('about:home') : openApp(a))}
           onTask={onTask}
           onPower={base.power}
+          onRecruiter={base.recruiter}
           tray={{
             notifications,
             onClearNotifications: () => { setNotifications([]); setUnread(0); },

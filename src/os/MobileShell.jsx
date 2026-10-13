@@ -45,6 +45,7 @@ export default function MobileShell({ base }) {
           <div className="shrink-0 flex items-center gap-2 px-3 py-2 bg-[#1d2a44] text-[#cfe0ff] text-[12px]">
             <Monitor size={15} className="shrink-0" />
             <span>Open this site on a computer to boot the full Kali desktop.</span>
+            <button onClick={() => base.recruiter?.()} className="ml-2 shrink-0 px-2 py-1 rounded bg-[#367bf0] text-white font-semibold">Profile</button>
             <button onClick={() => setHint(false)} className="ml-auto p-1" aria-label="Dismiss"><X size={14} /></button>
           </div>
         )}

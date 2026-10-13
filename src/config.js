@@ -17,7 +17,7 @@ export const CONFIG = {
   title: 'Cybersecurity Engineering Student',
   email: 'atagui.ir2027@esaip.org',
   github: 'taguianas',
-  linkedin: 'https://www.linkedin.com/in/anas-tagui-7b0599241/',
+  linkedin: 'https://www.linkedin.com/in/taguianas',
 
   osName: 'Kali GNU/Linux Rolling',
 

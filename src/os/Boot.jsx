@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { Power, Accessibility } from 'lucide-react';
+import { Power, Accessibility, Briefcase } from 'lucide-react';
 import { CONFIG } from '../config';
 import { Logo } from '../components/Icons';
 import { wallpaperStyle } from './wallpaper';
@@ -97,7 +97,7 @@ function XfceIcon({ size = 15 }) {
   );
 }
 
-export function Login({ onLogin, onPower, locked = false }) {
+export function Login({ onLogin, onPower, onRecruiter, locked = false }) {
   const [user, setUser] = useState(locked ? CONFIG.user : '');
   const [pass, setPass] = useState('');
   const [busy, setBusy] = useState(false);
@@ -240,6 +240,11 @@ export function Login({ onLogin, onPower, locked = false }) {
         </div>
       </form>
 
+      {onRecruiter && !locked && (
+        <button type="button" onClick={onRecruiter} className="absolute bottom-12 left-1/2 -translate-x-1/2 flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 hover:bg-white/20 border border-white/15 text-[13px] text-white backdrop-blur">
+          <Briefcase size={14} /> Recruiter? Open the one-page profile
+        </button>
+      )}
       <div className="absolute bottom-4 inset-x-0 text-center text-[12px] text-white/55">
         {locked ? 'Session locked. ' : ''}{filled ? 'Guest credentials filled in. Press Log In or Enter.' : `Signing in as ${CONFIG.user}…`}
       </div>

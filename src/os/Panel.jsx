@@ -1,11 +1,11 @@
 import { useState, useEffect, useRef } from 'react';
-import { Power, Lock, LogOut, RotateCcw, PowerOff } from 'lucide-react';
+import { Power, Lock, LogOut, RotateCcw, PowerOff, Briefcase } from 'lucide-react';
 import Tray from './Tray';
 import { Logo, TerminalAppIcon, FolderIcon, BrowserAppIcon, EditorAppIcon, KaliVMIcon } from '../components/Icons';
 import { APPS } from '../apps';
 import { PANEL_H } from './Window';
 
-export default function Panel({ windows, activeId, workspace, setWorkspace, menuOpen, onMenu, onLaunch, onTask, onPower, tray }) {
+export default function Panel({ windows, activeId, workspace, setWorkspace, menuOpen, onMenu, onLaunch, onTask, onPower, tray, onRecruiter }) {
   const [powerOpen, setPowerOpen] = useState(false);
   const powerRef = useRef(null);
 
@@ -83,6 +83,9 @@ export default function Panel({ windows, activeId, workspace, setWorkspace, menu
         })}
       </div>
 
+      <button onClick={onRecruiter} title="One-page profile for recruiters" className="h-[22px] mx-1.5 px-2.5 flex items-center gap-1.5 rounded bg-[#367bf0] hover:bg-[#4a8bff] text-white text-[12px] font-semibold whitespace-nowrap">
+        <Briefcase size={13} /> <span className="hidden md:inline">Recruiter view</span>
+      </button>
       <Tray {...tray} />
       <div ref={powerRef} className="relative h-full">
         <button onClick={() => setPowerOpen((o) => !o)} className={`h-full px-2.5 flex items-center ${powerOpen ? 'bg-white/10' : 'hover:bg-white/10'}`} title="Session">

@@ -9,6 +9,7 @@ import { PANEL_H } from './Window';
 export function buildMenu(act) {
   const I = (Icon, color) => function MenuIcon() { return <Icon size={22} color={color} />; };
   const items = {
+    recruiter: { name: 'Recruiter view', desc: 'One-page profile: experience, projects, resume', Icon: I(Users, '#367bf0'), run: () => act.recruiter() },
     kalivm: { name: 'Kali Linux (real VM)', desc: 'A real Kali booted in your browser', Icon: I(TermI, '#5aa2ff'), run: () => act.app('kalivm') },
     terminal: { name: 'Terminal Emulator', desc: 'Use the command line', Icon: I(TermI, '#4fd16b'), run: () => act.app('terminal') },
     files: { name: 'File Manager', desc: 'Browse the file system', Icon: I(LayoutGrid, '#5aa2ff'), run: () => act.app('files') },
@@ -30,7 +31,7 @@ export function buildMenu(act) {
     neofetch: { name: 'neofetch', desc: 'System information', Icon: I(Settings, '#9aa3b2'), run: () => act.cmd('neofetch') },
   };
   const cats = [
-    ['Favorites', Star, ['kalivm', 'terminal', 'files', 'firefox', 'about', 'resume', 'contact']],
+    ['Favorites', Star, ['recruiter', 'kalivm', 'terminal', 'files', 'firefox', 'about', 'resume', 'contact']],
     ['Recently Used', Clock3, ['about', 'nmap', 'msf']],
     ['All Applications', LayoutGrid, Object.keys(items)],
     ['01 - Information Gathering', Radar, ['about', 'nmap', 'edu']],

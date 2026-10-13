@@ -20,6 +20,7 @@ const MAIN = [
   { label: `Advanced options for ${OS}`, action: 'advanced' },
   { label: 'Memory test (memtest86+x64.efi)', action: 'memtest' },
   { label: 'UEFI Firmware Settings', action: 'uefi' },
+  { label: 'Recruiter mode (one-page profile)', action: 'recruiter' },
 ];
 
 const ADVANCED = [
@@ -79,7 +80,7 @@ function machineInfo() {
 
 
 // ------------------------------------------------------------------
-export default function Grub({ onDone }) {
+export default function Grub({ onDone, onRecruiter }) {
   const [fw, setFw] = useState(getFirmware);
   // menu | advanced | memtest | uefi | uefiauth | edit | cmd | pxe | secure | auth
   const [view, setView] = useState(() => (getFirmware().bootFirst === 'pxe' ? 'pxe' : 'menu'));
@@ -114,6 +115,7 @@ export default function Grub({ onDone }) {
     else if (action === 'recovery') boot({ recovery: true, verbose: true });
     else if (action === 'advanced') { setView('advanced'); setSel(0); }
     else if (action === 'uefi') openUefi();
+    else if (action === 'recruiter') onRecruiter?.();
     else setView(action);
   };
 
