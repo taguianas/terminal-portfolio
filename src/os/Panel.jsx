@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { Wifi, Volume2, BatteryFull, Power, Lock, LogOut, RotateCcw, PowerOff, Bell } from 'lucide-react';
-import { Logo, TerminalAppIcon, FolderIcon, BrowserAppIcon, EditorAppIcon } from '../components/Icons';
+import { Logo, TerminalAppIcon, FolderIcon, BrowserAppIcon, EditorAppIcon, KaliVMIcon } from '../components/Icons';
 import { APPS } from '../apps';
 import { PANEL_H } from './Window';
 
@@ -36,6 +36,7 @@ export default function Panel({ windows, activeId, workspace, setWorkspace, menu
     { app: 'terminal', Icon: TerminalAppIcon, label: 'Terminal Emulator' },
     { app: 'browser', Icon: BrowserAppIcon, label: 'Firefox ESR' },
     { app: 'editor', Icon: EditorAppIcon, label: 'Text Editor' },
+    { app: 'kalivm', Icon: KaliVMIcon, label: 'Kali Linux (real VM)' },
   ];
 
   const tasks = windows.filter((w) => w.ws === workspace);

@@ -1,4 +1,4 @@
-import { CONFIG } from '../config';
+import { CONFIG } from '../config.js';
 
 // ---------------------------------------------------------------
 //  Virtual file system. Everything a visitor can open, from the
@@ -26,6 +26,10 @@ const README = `
                (about.txt, projects, resume.pdf ...)
    * Terminal: type "help" to see every command
                try:  ls   cat about.txt   nmap anas
+   * Real Kali: double-click "Kali Linux (real VM)" or
+               type kali-vm. It boots a genuine Kali
+               (i386) inside your browser, with real
+               john, nmap, radare2, gcc ... and a mini CTF.
 
  Quick links
    About me ........ about.txt

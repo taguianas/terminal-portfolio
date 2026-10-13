@@ -1,0 +1,11 @@
+
+  This is a real Kali Linux (i386) running inside your browser.
+  Every command runs locally, in a WebAssembly sandbox (CheerpX).
+
+    ls                     my portfolio files
+    cat about.txt          who I am
+    cd challenges          a small CTF, try to crack it
+    sudo -i                you are root here, go ahead
+
+  No internet in this VM. Your changes stay in your browser only.
+

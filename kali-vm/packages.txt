@@ -1,0 +1,45 @@
+# Tools installed in the browser Kali (one per line).
+# The VM has no internet access, so offline tools make the most sense.
+# Anything not available for i386 is skipped and listed in the build log.
+
+# recon / network (work against localhost only)
+nmap
+netcat-traditional
+whois
+dnsutils
+
+# passwords and hashes
+john
+hashcat
+hashid
+hydra
+crunch
+
+# web
+sqlmap
+
+# forensics / stego
+binwalk
+foremost
+steghide
+libimage-exiftool-perl
+xxd
+hexedit
+
+# reverse engineering / dev
+radare2
+gdb
+ltrace
+gcc
+make
+python3
+git
+curl
+wget
+
+# fun and comfort
+fastfetch
+figlet
+cowsay
+tree
+htop

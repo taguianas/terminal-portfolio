@@ -6,7 +6,7 @@ import Panel from './Panel';
 import AppMenu, { buildMenu } from './AppMenu';
 import { APPS } from '../apps';
 import { HOME, getNode, listDir } from '../data/fs';
-import { NodeIcon, DriveIcon, HomeIcon, TrashIcon, TerminalAppIcon } from '../components/Icons';
+import { NodeIcon, DriveIcon, HomeIcon, TrashIcon, TerminalAppIcon, KaliVMIcon } from '../components/Icons';
 import { wallpaperStyle } from './wallpaper';
 
 export default function Desktop({ base }) {
@@ -24,8 +24,20 @@ export default function Desktop({ base }) {
   const titleSetters = useRef({});
 
   // ------------------------- window manager -------------------------
+  const winsRef = useRef([]);
+  winsRef.current = wins;
+
   const openApp = useCallback((app, props = {}, geom = {}) => {
     const def = APPS[app];
+    if (def.single) {
+      const existing = winsRef.current.find((w) => w.app === app);
+      if (existing) {
+        const z = ++zRef.current;
+        setWins((ws) => ws.map((w) => (w.id === existing.id ? { ...w, z, minimized: false, ws: wsRef.current } : w)));
+        setActiveId(existing.id);
+        return existing.id;
+      }
+    }
     const vw = window.innerWidth;
     const vh = window.innerHeight;
     const w = Math.min(geom.w ?? def.size[0], vw - 24);
@@ -158,6 +170,7 @@ export default function Desktop({ base }) {
       open: () => openPath([...HOME, name]),
     })),
     { key: 'term', label: 'Terminal', Icon: TerminalAppIcon, open: () => openApp('terminal') },
+    { key: 'kalivm', label: 'Kali Linux (real VM)', Icon: KaliVMIcon, open: () => openApp('kalivm') },
   ];
 
   const visible = wins.filter((w) => w.ws === workspace);

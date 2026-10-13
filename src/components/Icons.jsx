@@ -44,6 +44,19 @@ export function TerminalAppIcon({ size = 48 }) {
   );
 }
 
+export function KaliVMIcon({ size = 48 }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 48 48">
+      <rect x="4" y="7" width="40" height="34" rx="4" fill="#0f1a2e" stroke="#367bf0" strokeWidth="1.8" />
+      <rect x="4" y="7" width="40" height="6" rx="3" fill="#1d3561" />
+      <path d="M11 21l6 5-6 5" fill="none" stroke="#5aa2ff" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round" />
+      <path d="M21 32h8" stroke="#e6e6e6" strokeWidth="2.6" strokeLinecap="round" />
+      <circle cx="37" cy="34" r="6.5" fill="#e5484d" />
+      <text x="37" y="37.2" textAnchor="middle" fontSize="8" fontWeight="700" fontFamily="sans-serif" fill="#fff">VM</text>
+    </svg>
+  );
+}
+
 export function BrowserAppIcon({ size = 48 }) {
   return (
     <svg width={size} height={size} viewBox="0 0 48 48">

@@ -31,6 +31,7 @@ export const COMMANDS = {
   weather: 'Live weather (weather <city>)',
   resume: 'Open and download my resume',
   contact: 'How to reach me',
+  'kali-vm': 'Boot a REAL Kali Linux in your browser',
   firefox: 'Open the browser (firefox [url])',
   thunar: 'Open the file manager',
   mousepad: 'Open the text editor',
@@ -274,7 +275,7 @@ export default function Terminal({ initialCommand, onExit, active = true, mobile
         const groups = [
           ['Files', ['ls', 'cd', 'cat', 'open', 'pwd', 'mkdir', 'touch', 'echo']],
           ['Portfolio', ['neofetch', 'nmap', 'msfconsole', 'resume', 'contact', 'github', 'weather']],
-          ['Desktop apps', ['firefox', 'thunar', 'mousepad']],
+          ['Desktop apps', ['kali-vm', 'firefox', 'thunar', 'mousepad']],
           ['System', ['whoami', 'uname', 'ifconfig', 'date', 'history', 'clear', 'sudo', 'matrix', 'reboot', 'exit']],
         ];
         return {
@@ -405,6 +406,14 @@ export default function Terminal({ initialCommand, onExit, active = true, mobile
           return { out: node.type === 'file' ? <Text onUrl={onUrl}>{node.content}</Text> : <div className={DIM}>Opening {displayPath(path)} in a new tab ...</div> };
         }
         return { out: <div className={DIM}>Opening {displayPath(path)} ...</div> };
+      }
+
+      case 'kali-vm':
+      case 'ssh':
+      case 'vm': {
+        if (os.mobile) return txt('The real Kali VM needs a computer (it is too heavy for phones).');
+        os.openApp('kalivm');
+        return { out: <div className={DIM}>{cmd === 'ssh' ? 'Connecting to kali@kali ...' : 'Booting the real Kali VM ...'} (new window)</div> };
       }
 
       case 'firefox':
@@ -752,6 +761,12 @@ lo: flags=73<UP,LOOPBACK,RUNNING>  mtu 65536
                 <button className={`${GREEN} hover:underline`} onClick={() => runRef.current('cat about.txt')}>cat about.txt</button>.
                 {mobile ? ' Tap any file name in a listing to open it.' : ' You can also double-click the files on the desktop.'}
               </div>
+              {!mobile && (
+                <div className={DIM}>
+                  This terminal is a fast simulation. For a <span className="text-white font-bold">real</span> Kali Linux running in your browser, type{' '}
+                  <button className={`${GREEN} hover:underline`} onClick={() => runRef.current('kali-vm')}>kali-vm</button>.
+                </div>
+              )}
             </div>
           ) : (
             <div key={e.id} className="mb-1.5">

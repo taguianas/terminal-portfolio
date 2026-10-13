@@ -20,9 +20,15 @@ export const CONFIG = {
   linkedin: 'https://www.linkedin.com/in/anas-tagui-7b0599241/',
 
   osName: 'Kali GNU/Linux Rolling',
+
+  // Real Kali VM (built by .github/workflows/kali-vm-image.yml and
+  // published on GitHub Pages). Change the user/repo if you rename it.
+  kaliImage: 'https://taguianas.github.io/terminal-portfolio/kali/kali.ext2',
 };
 
 // Sites that are allowed to load inside the fake Firefox window.
 // Most big sites (GitHub, LinkedIn, Google) refuse to be embedded,
 // so for those the browser shows an "open in a new tab" page instead.
-export const EMBEDDABLE_HOSTS = ['shootoutangers.netlify.app', 'atagui.vercel.app'];
+// Note: the site is cross-origin isolated (needed by the real Kali VM),
+// so only sites that send Cross-Origin-Resource-Policy headers can load.
+export const EMBEDDABLE_HOSTS = [];

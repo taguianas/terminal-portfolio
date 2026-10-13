@@ -1,0 +1,88 @@
+# Builds the real Kali Linux disk image used by the "Kali Linux (real)"
+# window and publishes it on GitHub Pages:
+#   https://<user>.github.io/<repo>/kali/kali.ext2
+#
+# One-time setup: repo Settings > Pages > Source = "GitHub Actions".
+# Then run it from the Actions tab ("Build Kali VM image" > Run workflow).
+# Based on the deploy workflow of https://github.com/leaningtech/webvm
+
+name: Build Kali VM image
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    env:
+      TAG: kali-webvm-image
+      IMAGE_NAME: kali.ext2
+      DEPLOY_DIR: /tmp/deploy
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Export portfolio files into the image folder
+        run: node kali-vm/export-home.mjs
+
+      - name: Set up QEMU (i386 emulation for the build)
+        uses: docker/setup-qemu-action@v3
+
+      - name: Build the i386 Kali image
+        run: docker build --platform=linux/386 --tag $TAG kali-vm
+
+      - name: Create container
+        run: echo "CONTAINER_ID=$(docker create --platform=linux/386 $TAG)" >> $GITHUB_ENV
+
+      - name: Compute disk size
+        run: |
+          BYTES=$(docker export $CONTAINER_ID | wc -c)
+          MB=$(( BYTES * 13 / 10 / 1048576 + 64 ))
+          echo "Filesystem: $(( BYTES / 1048576 )) MB, disk image: ${MB} MB"
+          if [ $MB -gt 950 ]; then echo "::error::Image too big for GitHub Pages (${MB} MB > 950 MB). Remove packages from kali-vm/packages.txt"; exit 1; fi
+          echo "IMAGE_SIZE=${MB}M" >> $GITHUB_ENV
+
+      - name: Create ext2 image and copy the filesystem into it
+        run: |
+          sudo fallocate -l $IMAGE_SIZE $IMAGE_NAME
+          sudo mkfs.ext2 -r 0 $IMAGE_NAME
+          sudo mount -o loop -t ext2 $IMAGE_NAME /mnt/
+          sudo docker cp -a ${CONTAINER_ID}:/ /mnt/
+          sudo umount /mnt/
+
+      # .txt suffix lets GitHub Pages compress the chunks
+      - name: Split into chunks for streaming
+        run: |
+          sudo mkdir -p $DEPLOY_DIR/kali
+          sudo split $IMAGE_NAME $DEPLOY_DIR/kali/$IMAGE_NAME.c -a 6 -b 128k -x --additional-suffix=.txt
+          sudo bash -c "stat -c%s $IMAGE_NAME > $DEPLOY_DIR/kali/$IMAGE_NAME.meta"
+          echo "$(date -u +%Y%m%d%H%M) ${GITHUB_SHA::7}" | sudo tee $DEPLOY_DIR/kali/version.txt
+          sudo touch $DEPLOY_DIR/.nojekyll
+          sudo chmod -R a+r $DEPLOY_DIR
+          du -sh $DEPLOY_DIR
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: /tmp/deploy
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
