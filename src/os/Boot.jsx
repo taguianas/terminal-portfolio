@@ -121,6 +121,22 @@ export function Login({ onLogin, locked = false }) {
 
   const stopAuto = () => setAuto(false);
 
+  // Enter logs in from anywhere on the screen, even when no field has focus
+  // (inside the fields the form's own submit already handles it)
+  const btnRef = useRef(null);
+  useEffect(() => {
+    if (filled && !auto) btnRef.current?.focus({ preventScroll: true });
+  }, [filled, auto]);
+  useEffect(() => {
+    const onKey = (e) => {
+      if (e.key !== 'Enter' || e.target.closest?.('form')) return;
+      e.preventDefault();
+      submit();
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  });
+
   return (
     <div className="fixed inset-0 font-ui text-[#e8eaee] select-none" style={wallpaperStyle}>
       <div className="absolute inset-0 bg-black/45 backdrop-blur-[6px]" />
@@ -162,6 +178,7 @@ export function Login({ onLogin, locked = false }) {
             />
           </div>
           <button
+            ref={btnRef}
             type="submit"
             className={`w-full h-10 rounded bg-[#367bf0] hover:bg-[#4a8bff] font-semibold text-white transition-colors ${filled && !busy ? 'ring-2 ring-[#5aa2ff] ring-offset-2 ring-offset-black/40 animate-pulse' : ''}`}
           >
