@@ -35,7 +35,8 @@ RUN useradd -m -s /bin/zsh -G sudo kali && \
 COPY --chown=1000:1000 home/ /home/kali/
 COPY --chown=1000:1000 challenges/ /home/kali/challenges/
 COPY motd /etc/motd
-RUN chmod +x /home/kali/challenges/unlock.sh && \
+RUN if [ -x /usr/bin/tcc ]; then ln -sf /usr/bin/tcc /usr/local/bin/gcc && ln -sf /usr/bin/tcc /usr/local/bin/cc; fi && \
+    chmod +x /home/kali/challenges/unlock.sh && \
     echo 'cat /etc/motd' > /home/kali/.zlogin && chown 1000:1000 /home/kali/.zlogin
 
 WORKDIR /home/kali

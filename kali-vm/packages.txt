@@ -3,7 +3,8 @@
 # Anything not available for i386 is skipped and listed in the build log.
 # Keep it small: the whole disk must stay under ~950 MB for GitHub Pages.
 # Left out on purpose because they are huge: hashcat (pulls LLVM/OpenCL),
-# gdb, git, full vim.
+# gdb, git, full vim, gcc (tcc, a tiny real C compiler, replaces it),
+# hydra and fastfetch (pull in Samba, ffmpeg and image libraries).
 
 # recon / network (work against localhost only)
 nmap
@@ -14,7 +15,6 @@ dnsutils
 # passwords and hashes
 john
 hashid
-hydra
 crunch
 
 # web
@@ -30,14 +30,13 @@ hexedit
 
 # reverse engineering / dev
 radare2
-gcc
-make
+tcc
+libc6-dev
 python3
 curl
 wget
 
 # fun and comfort
-fastfetch
 figlet
 cowsay
 tree

@@ -27,7 +27,7 @@ A portfolio that boots like a Kali Linux machine in the browser: GRUB, systemd b
 
 ## The real Kali VM
 
-Besides the fast simulated desktop, the **Kali Linux (real VM)** window boots a genuine Kali Linux (i386) inside the visitor's browser with [CheerpX](https://cheerpx.io) (x86 to WebAssembly). Real `zsh`, `nmap`, `john`, `radare2`, `gcc`, `python3`... plus the portfolio files and a mini CTF in `~/challenges`. It has no network access and every change stays in the visitor's browser.
+Besides the fast simulated desktop, the **Kali Linux (real VM)** window boots a genuine Kali Linux (i386) inside the visitor's browser with [CheerpX](https://cheerpx.io) (x86 to WebAssembly). Real `zsh`, `nmap`, `john`, `radare2`, `tcc` (C compiler), `python3`... plus the portfolio files and a mini CTF in `~/challenges`. It has no network access and every change stays in the visitor's browser.
 
 How it works:
 

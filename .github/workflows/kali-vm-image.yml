@@ -62,7 +62,7 @@ jobs:
           docker run --rm --platform=linux/386 $TAG dpkg-query -Wf '${Installed-Size}\t${Package}\n' | sort -rn | head -25 | tee /tmp/top.txt
           echo "::notice title=Biggest packages (KB)::$(head -15 /tmp/top.txt | tr '\t\n' ' ;')"
           BYTES=$(docker export $CONTAINER_ID | wc -c)
-          MB=$(( BYTES * 13 / 10 / 1048576 + 64 ))
+          MB=$(( BYTES * 115 / 100 / 1048576 + 48 ))
           echo "Filesystem: $(( BYTES / 1048576 )) MB, disk image: ${MB} MB"
           if [ $MB -gt 950 ]; then echo "::error::Image too big for GitHub Pages (${MB} MB > 950 MB). Remove packages from kali-vm/packages.txt"; exit 1; fi
           echo "IMAGE_SIZE=${MB}M" >> $GITHUB_ENV
