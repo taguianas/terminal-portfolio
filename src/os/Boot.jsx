@@ -4,58 +4,6 @@ import { CONFIG } from '../config';
 import { Logo } from '../components/Icons';
 import { wallpaperStyle } from './wallpaper';
 
-// ----------------------------- GRUB --------------------------------
-const GRUB_ENTRIES = [
-  `${CONFIG.osName.replace(' Rolling', '')}`,
-  `Advanced options for ${CONFIG.osName.replace(' Rolling', '')}`,
-  'Memory test (memtest86+x64.efi)',
-  'UEFI Firmware Settings',
-];
-
-export function Grub({ onDone }) {
-  const [sel, setSel] = useState(0);
-  const [left, setLeft] = useState(3);
-  const [touched, setTouched] = useState(false);
-  const done = useRef(false);
-  const finish = () => { if (!done.current) { done.current = true; onDone(); } };
-
-  useEffect(() => {
-    if (touched) return;
-    if (left <= 0) { finish(); return; }
-    const t = setTimeout(() => setLeft((l) => l - 1), 1000);
-    return () => clearTimeout(t);
-  });
-
-  useEffect(() => {
-    const onKey = (e) => {
-      setTouched(true);
-      if (e.key === 'ArrowDown') setSel((s) => Math.min(GRUB_ENTRIES.length - 1, s + 1));
-      else if (e.key === 'ArrowUp') setSel((s) => Math.max(0, s - 1));
-      else if (e.key === 'Enter') finish();
-    };
-    window.addEventListener('keydown', onKey);
-    return () => window.removeEventListener('keydown', onKey);
-  });
-
-  return (
-    <div className="fixed inset-0 bg-black text-[#c7c7c7] font-mono text-[13px] sm:text-[15px] flex flex-col items-center justify-center p-4 select-none" onClick={finish}>
-      <div className="mb-6 text-center">GNU GRUB  version 2.12-9</div>
-      <div className="w-full max-w-3xl border border-[#c7c7c7] p-1 min-h-[260px]">
-        {GRUB_ENTRIES.map((e, i) => (
-          <div key={e} className={`px-2 ${i === sel ? 'bg-[#c7c7c7] text-black' : ''}`}>
-            {i === sel ? '*' : ' '}{e}
-          </div>
-        ))}
-      </div>
-      <div className="w-full max-w-3xl mt-4 px-2 leading-relaxed text-[12px] sm:text-[14px]">
-        <div>Use the ▲ and ▼ keys to select which entry is highlighted.</div>
-        <div>Press enter to boot the selected OS, `e' to edit the commands before booting or `c' for a command-line.</div>
-        {!touched && <div className="mt-1">The highlighted entry will be executed automatically in {left}s.</div>}
-      </div>
-    </div>
-  );
-}
-
 // --------------------------- kernel / systemd ----------------------
 const LOGS = [
   ['', 'Loading Linux 6.12.38+kali-amd64 ...'],
@@ -73,13 +21,34 @@ const LOGS = [
   ['ok', 'Reached target graphical.target - Graphical Interface.'],
 ];
 
-export function BootLogs({ onDone, fast = false }) {
+const VERBOSE = [
+  ['', '[    0.000000] Linux version 6.12.38+kali-amd64 (devel@kali.org) (gcc-14 (Debian 14.2.0-19) 14.2.0) #1 SMP PREEMPT_DYNAMIC Kali 6.12.38-1kali1'],
+  ['', '[    0.000000] Command line: BOOT_IMAGE=/boot/vmlinuz-6.12.38+kali-amd64 root=UUID=3f6c1a2e-8d4b-4c71-9b2e-a7d5c0e41f93 ro'],
+  ['', `[    0.000000] DMI: Portfolio Megatrends Browser VM/${navigator.hardwareConcurrency || 4} cores, BIOS 2.22.1287 10/13/2026`],
+  ['', '[    0.012034] smpboot: Allowing CPUs, 0 hotplug CPUs'],
+  ['', '[    0.204551] ACPI: Core revision 20240827'],
+  ['', `[    0.312876] Memory: ${navigator.deviceMemory ? navigator.deviceMemory * 1024 * 1024 : 8388608}K available`],
+  ['', '[    1.004211] EXT4-fs (sda2): mounted filesystem 3f6c1a2e-8d4b-4c71-9b2e-a7d5c0e41f93 ro with ordered data mode'],
+  ['', '[    1.553120] systemd[1]: systemd 257.7-1 running in system mode (+PAM +AUDIT +SELINUX +APPARMOR +IMA +SMACK +SECCOMP)'],
+  ['', '[    1.553901] systemd[1]: Detected architecture x86-64.'],
+  ['', `[    1.560018] systemd[1]: Hostname set to <${CONFIG.host}>.`],
+];
+
+export function BootLogs({ onDone, fast = false, verbose = false, recovery = false }) {
   const [n, setN] = useState(0);
+  const [waiting, setWaiting] = useState(false);
   const done = useRef(false);
-  const finish = () => { if (!done.current) { done.current = true; onDone(); } };
+  const lines = verbose || recovery ? [...LOGS.slice(0, 2), ...VERBOSE, ...LOGS.slice(2)] : LOGS;
+  const finish = () => {
+    if (done.current) return;
+    if (recovery && !waiting) { setN(lines.length); setWaiting(true); return; }
+    done.current = true;
+    onDone();
+  };
 
   useEffect(() => {
-    if (n >= LOGS.length) {
+    if (waiting) return;
+    if (n >= lines.length) {
       const t = setTimeout(finish, 450);
       return () => clearTimeout(t);
     }
@@ -94,7 +63,7 @@ export function BootLogs({ onDone, fast = false }) {
 
   return (
     <div className="fixed inset-0 bg-black text-[#bcbcbc] font-mono text-[12px] sm:text-[14px] p-3 sm:p-5 overflow-hidden select-none" onClick={finish}>
-      {LOGS.slice(0, n).map(([k, l], i) => (
+      {lines.slice(0, n).map(([k, l], i) => (
         <div key={i} className="whitespace-pre-wrap">
           {k === 'ok' ? (
             <>
@@ -103,8 +72,16 @@ export function BootLogs({ onDone, fast = false }) {
           ) : l}
         </div>
       ))}
+      {waiting && (
+        <div className="mt-2">
+          <div>You are in emergency mode. After logging in, type "journalctl -xb" to view</div>
+          <div>system logs, "systemctl reboot" to reboot, or "exit" to continue bootup.</div>
+          <div className="mt-1">Give root password for maintenance</div>
+          <div>(or press Control-D to continue): <span className="text-white">press any key or click to continue</span></div>
+        </div>
+      )}
       <span className="inline-block w-2.5 h-4 bg-[#bcbcbc] animate-pulse align-middle" />
-      <div className="absolute bottom-3 right-4 text-[11px] text-[#555]">click or press any key to skip</div>
+      {!waiting && <div className="absolute bottom-3 right-4 text-[11px] text-[#555]">click or press any key to skip</div>}
     </div>
   );
 }
@@ -130,14 +107,15 @@ export function Login({ onLogin, locked = false }) {
     setTimeout(onLogin, 550);
   };
 
-  // auto-type "visitor" / password, then log in
+  // auto-type "visitor" / password, then wait for the visitor to click Log In
+  const filled = user.length >= CONFIG.user.length && pass.length >= 8;
   useEffect(() => {
     if (!auto) return;
     const target = CONFIG.user;
     let t;
     if (user.length < target.length) t = setTimeout(() => setUser(target.slice(0, user.length + 1)), user.length === 0 ? 700 : 90);
     else if (pass.length < 8) t = setTimeout(() => setPass('x'.repeat(pass.length + 1)), pass.length === 0 ? 350 : 80);
-    else t = setTimeout(submit, 450);
+    else setAuto(false);
     return () => clearTimeout(t);
   });
 
@@ -183,12 +161,17 @@ export function Login({ onLogin, locked = false }) {
               className="flex-1 bg-transparent outline-none placeholder:text-[#6b7383]"
             />
           </div>
-          <button type="submit" className="w-full h-10 rounded bg-[#367bf0] hover:bg-[#4a8bff] font-semibold text-white transition-colors">
+          <button
+            type="submit"
+            className={`w-full h-10 rounded bg-[#367bf0] hover:bg-[#4a8bff] font-semibold text-white transition-colors ${filled && !busy ? 'ring-2 ring-[#5aa2ff] ring-offset-2 ring-offset-black/40 animate-pulse' : ''}`}
+          >
             {busy ? 'Logging in...' : 'Log In'}
           </button>
         </div>
-        <div className="text-[12px] text-[#aeb4c0] text-center">
-          {locked ? 'Session locked.' : 'Guest access enabled.'} Any password works, just press <b>Log In</b>.
+        <div className={`text-[12px] text-center transition-colors ${filled ? 'text-white' : 'text-[#aeb4c0]'}`}>
+          {filled
+            ? <>Credentials filled in for you. Click <b>Log In</b> (or press Enter).</>
+            : <>{locked ? 'Session locked.' : 'Guest access enabled.'} Signing you in as <b>{CONFIG.user}</b> ...</>}
         </div>
       </form>
       {busy && <div className="absolute inset-0 bg-black animate-[fadeIn_.5s_ease_forwards]" />}

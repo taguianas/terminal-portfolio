@@ -1,6 +1,7 @@
 import { useState, useCallback, useMemo, useEffect } from 'react';
 import { INITIAL_FS, updateAt } from './data/fs';
-import { Grub, BootLogs, Login, PoweredOff, KernelPanic, Matrix } from './os/Boot';
+import { BootLogs, Login, PoweredOff, KernelPanic, Matrix } from './os/Boot';
+import Grub from './os/Grub';
 import Desktop from './os/Desktop';
 import MobileShell from './os/MobileShell';
 
@@ -11,11 +12,14 @@ const store = {
 };
 
 const isSmall = () => window.innerWidth < 768;
+// "Fast Boot" can be switched on in the UEFI settings (GRUB > UEFI Firmware Settings)
+const fastBoot = () => { try { return localStorage.getItem('kali-fastboot') === '1'; } catch { return false; } };
 
 // Boot flow: grub -> boot -> login -> desktop
 // After the first visit in a tab, the desktop opens straight away.
 export default function App() {
-  const [stage, setStage] = useState(() => (store.get() ? 'desktop' : 'grub'));
+  const [stage, setStage] = useState(() => (store.get() ? 'desktop' : fastBoot() ? 'boot' : 'grub'));
+  const [bootOpts, setBootOpts] = useState({});
   const [mobile, setMobile] = useState(isSmall);
   const [fs, setFs] = useState(INITIAL_FS);
   const [crashed, setCrashed] = useState(false);
@@ -33,7 +37,7 @@ export default function App() {
   const power = useCallback((action) => {
     if (action === 'lock') setStage('lock');
     else if (action === 'logout') { setSession((s) => s + 1); setStage('login'); }
-    else if (action === 'reboot') { store.set(false); setSession((s) => s + 1); setStage('grub'); }
+    else if (action === 'reboot') { store.set(false); setSession((s) => s + 1); setStage(fastBoot() ? 'boot' : 'grub'); }
     else if (action === 'shutdown') { store.set(false); setSession((s) => s + 1); setStage('off'); }
   }, []);
 
@@ -55,8 +59,8 @@ export default function App() {
 
   let screen;
   if (stage === 'off') screen = <PoweredOff onPowerOn={() => setStage('grub')} />;
-  else if (stage === 'grub') screen = mobile ? <BootLogs fast onDone={() => setStage('login')} /> : <Grub onDone={() => setStage('boot')} />;
-  else if (stage === 'boot') screen = <BootLogs onDone={() => setStage('login')} />;
+  else if (stage === 'grub') screen = mobile ? <BootLogs fast onDone={() => setStage('login')} /> : <Grub onDone={(o) => { setBootOpts(o || {}); setStage('boot'); }} />;
+  else if (stage === 'boot') screen = <BootLogs verbose={bootOpts.verbose} recovery={bootOpts.recovery} onDone={() => setStage('login')} />;
   else if (stage === 'login' && !mobile) screen = <Login onLogin={login} />;
   else if (mobile) screen = <MobileShell key={session} base={base} />;
   else {
