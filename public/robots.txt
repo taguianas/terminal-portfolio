@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://atagui.vercel.app/sitemap.xml
