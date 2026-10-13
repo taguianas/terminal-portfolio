@@ -26,9 +26,12 @@ export const CONFIG = {
   kaliImage: 'https://taguianas.github.io/terminal-portfolio/kali/kali.ext2',
 };
 
-// Sites that are allowed to load inside the fake Firefox window.
-// Most big sites (GitHub, LinkedIn, Google) refuse to be embedded,
-// so for those the browser shows an "open in a new tab" page instead.
-// Note: the site is cross-origin isolated (needed by the real Kali VM),
-// so only sites that send Cross-Origin-Resource-Policy headers can load.
-export const EMBEDDABLE_HOSTS = [];
+// Sites that refuse to be shown inside another page (X-Frame-Options /
+// CSP frame-ancestors). Firefox shows an "open in a new tab" page for
+// them right away instead of a blank frame. Everything else loads live.
+export const BLOCKED_HOSTS = [
+  'github.com', 'linkedin.com', 'youtube.com', 'x.com', 'twitter.com',
+  'facebook.com', 'instagram.com', 'reddit.com', 'stackoverflow.com',
+  'duckduckgo.com', 'bing.com', 'netflix.com', 'amazon.com', 'chatgpt.com',
+  'claude.ai', 'tryhackme.com', 'hackthebox.com', 'kali.org', 'offsec.com',
+];

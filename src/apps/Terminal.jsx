@@ -548,6 +548,7 @@ lo: flags=73<UP,LOOPBACK,RUNNING>  mtu 65536
         a.click();
         a.remove();
         os.openPath([...HOME, 'resume.pdf']);
+        os.notify?.('Download complete', 'resume.pdf was saved to your Downloads folder.');
         return { out: <div className={GREEN}>[+] Downloading resume.pdf ... done</div> };
       }
 

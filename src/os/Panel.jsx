@@ -1,26 +1,11 @@
 import { useState, useEffect, useRef } from 'react';
-import { Wifi, Volume2, BatteryFull, Power, Lock, LogOut, RotateCcw, PowerOff, Bell } from 'lucide-react';
+import { Power, Lock, LogOut, RotateCcw, PowerOff } from 'lucide-react';
+import Tray from './Tray';
 import { Logo, TerminalAppIcon, FolderIcon, BrowserAppIcon, EditorAppIcon, KaliVMIcon } from '../components/Icons';
 import { APPS } from '../apps';
 import { PANEL_H } from './Window';
 
-function Clock() {
-  const [now, setNow] = useState(new Date());
-  useEffect(() => {
-    const t = setInterval(() => setNow(new Date()), 15000);
-    return () => clearInterval(t);
-  }, []);
-  const day = now.toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short' });
-  const time = now.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
-  return (
-    <span className="px-2 text-[12.5px] font-semibold tabular-nums whitespace-nowrap" title={now.toDateString()}>
-      <span className="hidden lg:inline text-[#aeb4c0] font-normal mr-2">{day}</span>
-      {time}
-    </span>
-  );
-}
-
-export default function Panel({ windows, activeId, workspace, setWorkspace, menuOpen, onMenu, onLaunch, onTask, onPower }) {
+export default function Panel({ windows, activeId, workspace, setWorkspace, menuOpen, onMenu, onLaunch, onTask, onPower, tray }) {
   const [powerOpen, setPowerOpen] = useState(false);
   const powerRef = useRef(null);
 
@@ -98,13 +83,7 @@ export default function Panel({ windows, activeId, workspace, setWorkspace, menu
         })}
       </div>
 
-      <div className="flex items-center gap-2.5 px-2 text-[#c4c9d3]">
-        <Bell size={14} className="hidden sm:block" />
-        <Volume2 size={15} className="hidden sm:block" />
-        <Wifi size={15} />
-        <BatteryFull size={17} className="hidden sm:block" />
-      </div>
-      <Clock />
+      <Tray {...tray} />
       <div ref={powerRef} className="relative h-full">
         <button onClick={() => setPowerOpen((o) => !o)} className={`h-full px-2.5 flex items-center ${powerOpen ? 'bg-white/10' : 'hover:bg-white/10'}`} title="Session">
           <Power size={15} />

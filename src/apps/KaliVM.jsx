@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { Cpu, HardDrive, WifiOff } from 'lucide-react';
 import '@xterm/xterm/css/xterm.css';
 import { CONFIG } from '../config';
+import { useOS } from '../os/OSContext';
 
 // A real Kali Linux (i386) booted in the browser with CheerpX.
 // The disk image is streamed from GitHub Pages in 128 KB chunks,
@@ -19,7 +20,7 @@ const THEME = {
 };
 
 const ENV = [
-  'HOME=/home/kali', 'USER=kali', 'LOGNAME=kali', 'SHELL=/bin/bash',
+  'HOME=/home/kali', 'USER=kali', 'LOGNAME=kali', 'SHELL=/bin/zsh',
   'TERM=xterm-256color', 'LANG=C.UTF-8', 'EDITOR=nano',
   'PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin',
 ];
@@ -29,6 +30,9 @@ const OK = '\x1b[1;32m[+]\x1b[0m';
 const ERR = '\x1b[1;31m[-]\x1b[0m';
 
 export default function KaliVM({ active, setTitle }) {
+  const os = useOS();
+  const notifyRef = useRef(null);
+  notifyRef.current = os?.notify;
   const boxRef = useRef(null);
   const termRef = useRef(null);
   const [status, setStatus] = useState('starting');
@@ -122,10 +126,9 @@ export default function KaliVM({ active, setTitle }) {
       });
 
       say(`${OK} Kernel ready. Logging in as kali ...`);
-      say(`${B} The first login loads the shell over the network (10-30 s).`);
-      say(`${B} Wait for the \x1b[1;34mkali㉿kali\x1b[0m prompt before typing.`);
       say();
       setStatus('running');
+      notifyRef.current?.('Kali VM is running', 'A real Kali Linux (i386) booted inside your browser.');
       fit.fit();
       const send = cx.setCustomConsole((buf, vt) => { if (vt === 1) term.write(new Uint8Array(buf)); }, term.cols, term.rows);
       term.onData((str) => { for (let i = 0; i < str.length; i++) send(str.charCodeAt(i)); });
@@ -133,7 +136,7 @@ export default function KaliVM({ active, setTitle }) {
 
       // like a real terminal: if the shell exits, start a new one
       while (!disposed) {
-        await cx.run('/bin/bash', ['--login'], { env: ENV, cwd: '/home/kali', uid: 1000, gid: 1000 });
+        await cx.run('/bin/zsh', ['-l'], { env: ENV, cwd: '/home/kali', uid: 1000, gid: 1000 });
         if (!disposed) say(`\r\n${B} Shell exited, starting a new one ...`);
       }
     };

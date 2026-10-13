@@ -8,6 +8,8 @@ import { APPS } from '../apps';
 import { HOME, getNode, listDir } from '../data/fs';
 import { NodeIcon, DriveIcon, HomeIcon, TrashIcon, TerminalAppIcon, KaliVMIcon } from '../components/Icons';
 import { wallpaperStyle } from './wallpaper';
+import { play } from './sound';
+import { X as XIcon, Bell as BellIcon } from 'lucide-react';
 
 export default function Desktop({ base }) {
   const [wins, setWins] = useState([]);
@@ -16,6 +18,24 @@ export default function Desktop({ base }) {
   const [menuOpen, setMenuOpen] = useState(false);
   const [selected, setSelected] = useState(null);
   const [ctxMenu, setCtxMenu] = useState(null);
+
+  // ------------------------- notifications --------------------------
+  const [notifications, setNotifications] = useState([]);
+  const [toasts, setToasts] = useState([]);
+  const [unread, setUnread] = useState(0);
+  const [dnd, setDnd] = useState(false);
+  const dndRef = useRef(false);
+  dndRef.current = dnd;
+  const nidRef = useRef(1);
+  const notify = useCallback((title, body = '', sound = 'notify') => {
+    const n = { id: nidRef.current++, title, body, time: new Date() };
+    setNotifications((l) => [...l.slice(-30), n]);
+    setUnread((u) => u + 1);
+    if (dndRef.current) return;
+    if (sound) play(sound);
+    setToasts((t) => [...t, n]);
+    setTimeout(() => setToasts((t) => t.filter((x) => x.id !== n.id)), 5000);
+  }, []);
   const zRef = useRef(10);
   const idRef = useRef(1);
   const wsRef = useRef(1);
@@ -114,7 +134,7 @@ export default function Desktop({ base }) {
   };
 
   // -------------------------- OS API for apps ------------------------
-  const os = useMemo(() => ({ ...base, openApp, openPath, openUrl, mobile: false }), [base, openApp, openPath, openUrl]);
+  const os = useMemo(() => ({ ...base, openApp, openPath, openUrl, notify, mobile: false }), [base, openApp, openPath, openUrl, notify]);
 
   const menu = useMemo(
     () =>
@@ -133,6 +153,10 @@ export default function Desktop({ base }) {
   useEffect(() => {
     if (opened.current) return;
     opened.current = true;
+    setTimeout(() => {
+      play('login');
+      notify('Welcome to Kali', 'Double-click the icons or use the terminal. Try the real Kali VM too.', null);
+    }, 600);
     const vw = window.innerWidth;
     const vh = window.innerHeight;
     if (vw >= 1100) {
@@ -265,7 +289,29 @@ export default function Desktop({ base }) {
           onLaunch={(a) => (a === 'browser' ? openUrl('about:home') : openApp(a))}
           onTask={onTask}
           onPower={base.power}
+          tray={{
+            notifications,
+            onClearNotifications: () => { setNotifications([]); setUnread(0); },
+            dnd,
+            setDnd,
+            unread,
+            onOpenNotifications: () => setUnread(0),
+          }}
         />
+
+        {/* notification toasts */}
+        <div className="absolute right-2 flex flex-col gap-2 w-[320px] max-w-[calc(100vw-16px)] pointer-events-none" style={{ top: PANEL_H + 8, zIndex: 99990 }}>
+          {toasts.map((t) => (
+            <div key={t.id} className="pointer-events-auto flex gap-3 p-3 rounded-md bg-[#22242c]/95 backdrop-blur border border-[#363a46] shadow-2xl text-[13px] text-[#dfe3ea] wm-open">
+              <BellIcon size={16} className="text-[#5aa2ff] shrink-0 mt-0.5" />
+              <div className="flex-1 min-w-0">
+                <div className="font-semibold">{t.title}</div>
+                {t.body && <div className="text-[12.5px] text-[#aeb4c0] mt-0.5">{t.body}</div>}
+              </div>
+              <button onClick={() => setToasts((l) => l.filter((x) => x.id !== t.id))} className="self-start p-0.5 rounded hover:bg-white/10"><XIcon size={13} /></button>
+            </div>
+          ))}
+        </div>
         {menuOpen && <AppMenu menu={menu} onClose={() => setMenuOpen(false)} onPower={base.power} />}
       </div>
     </OSContext.Provider>
