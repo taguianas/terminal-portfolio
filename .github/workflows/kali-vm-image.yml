@@ -3,13 +3,23 @@
 #   https://<user>.github.io/<repo>/kali/kali.ext2
 #
 # One-time setup: repo Settings > Pages > Source = "GitHub Actions".
-# Then run it from the Actions tab ("Build Kali VM image" > Run workflow).
+# It runs by itself on every push to main that changes the VM content,
+# or by hand from the Actions tab ("Build Kali VM image" > Run workflow).
 # Based on the deploy workflow of https://github.com/leaningtech/webvm
 
 name: Build Kali VM image
 
 on:
   workflow_dispatch:
+  # rebuild automatically when the VM content changes on main
+  push:
+    branches: [main]
+    paths:
+      - 'kali-vm/**'
+      - 'src/data/fs.js'
+      - 'src/config.js'
+      - 'public/resume.pdf'
+      - '.github/workflows/kali-vm-image.yml'
 
 permissions:
   contents: read
