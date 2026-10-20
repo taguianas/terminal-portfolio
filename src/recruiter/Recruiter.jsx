@@ -26,6 +26,7 @@ const KIND_COLORS = {
   Offensive: 'bg-[#fdecec] text-[#c0392b]',
   AppSec: 'bg-[#f1eafd] text-[#6b3fc2]',
   SysAdmin: 'bg-[#e9f7ef] text-[#1e7a46]',
+  Network: 'bg-[#e6f6f4] text-[#0f766e]',
 };
 
 function loadLang() {
@@ -45,7 +46,7 @@ export default function Recruiter({ onExit }) {
   const scroller = useRef(null);
   const t = UI[lang];
   const L = P[lang];
-  const ids = ['about', 'experience', 'projects', 'skills', 'education'];
+  const ids = ['about', 'experience', 'projects', 'skills', 'education', 'volunteering'];
 
   useEffect(() => {
     try { localStorage.setItem('recruiter-lang', lang); } catch { /* ignore */ }
@@ -175,16 +176,27 @@ export default function Recruiter({ onExit }) {
         <Section id="projects" title={t.projects} sub={t.projectsSub} icon={ShieldCheck}>
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {P.projects.map((p) => (
-              <a key={p.name} href={p.repo} target="_blank" rel="noreferrer" className="group flex flex-col rounded-xl bg-white border border-[#e6e8ec] p-5 hover:border-[#1d5fd6]/50 hover:shadow-[0_8px_30px_rgba(29,95,214,0.08)] transition-all break-inside-avoid">
-                <div className="flex items-center justify-between">
-                  <span className={`text-[11.5px] font-semibold px-2 py-0.5 rounded ${KIND_COLORS[p.kind]}`}>{p.kind}</span>
-                  <ArrowUpRight size={17} className="text-[#9aa3b2] group-hover:text-[#1d5fd6] transition-colors print:hidden" />
+              <div key={p.name} className="group flex flex-col rounded-xl bg-white border border-[#e6e8ec] overflow-hidden hover:border-[#1d5fd6]/50 hover:shadow-[0_8px_30px_rgba(29,95,214,0.08)] transition-all break-inside-avoid">
+                {p.img && (
+                  <a href={p.demo || p.repo} target="_blank" rel="noreferrer" className="block relative h-36 bg-[#eef1f5] overflow-hidden print:hidden">
+                    <img src={p.img} alt={p.name} loading="lazy" className="w-full h-full object-cover group-hover:scale-[1.03] transition-transform duration-500" />
+                    {p.flagship && <span className="absolute top-2 left-2 bg-[#1d5fd6] text-white text-[10px] font-bold px-2 py-0.5 rounded uppercase tracking-wider shadow">{lang === 'fr' ? 'Projet phare' : 'Flagship'}</span>}
+                  </a>
+                )}
+                <div className="flex flex-col flex-1 p-5">
+                  <div className="flex items-center justify-between">
+                    <span className={`text-[11.5px] font-semibold px-2 py-0.5 rounded ${KIND_COLORS[p.kind]}`}>{p.kind}</span>
+                    {!p.img && p.flagship && <span className="text-[10px] font-bold px-2 py-0.5 rounded uppercase tracking-wider bg-[#eef4ff] text-[#1d5fd6]">{lang === 'fr' ? 'Projet phare' : 'Flagship'}</span>}
+                  </div>
+                  <h3 className="mt-3 text-[17px] font-semibold">{p.name}</h3>
+                  <p className="mt-1.5 text-[14.5px] leading-relaxed text-[#4b5260] flex-1">{p[lang]}</p>
+                  <div className="mt-4 flex flex-wrap gap-1.5">{p.stack.map((s) => <Chip key={s}>{s}</Chip>)}</div>
+                  <div className="mt-4 flex items-center gap-4 text-[13px] font-medium print:hidden">
+                    <a href={p.repo} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1.5 text-[#1d5fd6] hover:underline"><GithubIcon size={14} /> {t.viewCode}</a>
+                    {p.demo && <a href={p.demo} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1 text-[#1d5fd6] hover:underline">{t.demo} <ArrowUpRight size={13} /></a>}
+                  </div>
                 </div>
-                <h3 className="mt-3 text-[17px] font-semibold">{p.name}</h3>
-                <p className="mt-1.5 text-[14.5px] leading-relaxed text-[#4b5260] flex-1">{p[lang]}</p>
-                <div className="mt-4 flex flex-wrap gap-1.5">{p.stack.map((s) => <Chip key={s}>{s}</Chip>)}</div>
-                <div className="mt-4 flex items-center gap-1.5 text-[13px] font-medium text-[#1d5fd6] print:hidden"><GithubIcon size={14} /> {t.viewCode}</div>
-              </a>
+              </div>
             ))}
           </div>
         </Section>
@@ -241,6 +253,32 @@ export default function Recruiter({ onExit }) {
                 </div>
               </div>
             </div>
+          </div>
+        </Section>
+
+        {/* ------------------------------------------------ volunteering */}
+        <Section id="volunteering" title={t.volunteering} icon={Heart}>
+          <div className="grid sm:grid-cols-2 gap-4">
+            {P.volunteering.map((v) => (
+              <div key={v.name} className="group flex flex-col rounded-xl bg-white border border-[#e6e8ec] overflow-hidden hover:border-[#1d5fd6]/50 hover:shadow-[0_8px_30px_rgba(29,95,214,0.08)] transition-all break-inside-avoid">
+                {v.img && (
+                  <a href={v.demo || '#'} target="_blank" rel="noreferrer" className="block relative h-36 bg-[#eef1f5] overflow-hidden print:hidden">
+                    <img src={v.img} alt={v.name} loading="lazy" className="w-full h-full object-cover group-hover:scale-[1.03] transition-transform duration-500" />
+                  </a>
+                )}
+                <div className="flex flex-col flex-1 p-5">
+                  <h3 className="text-[17px] font-semibold">{v.name}</h3>
+                  {v.role && <div className="text-[13.5px] text-[#1d5fd6] font-medium mt-0.5">{pick(v.role, lang)}</div>}
+                  <p className="mt-2 text-[14.5px] leading-relaxed text-[#4b5260] flex-1">{v[lang]}</p>
+                  <div className="mt-4 flex flex-wrap gap-1.5">{v.stack.map((s) => <Chip key={s}>{s}</Chip>)}</div>
+                  {v.demo && (
+                    <div className="mt-4 text-[13px] font-medium print:hidden">
+                      <a href={v.demo} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1 text-[#1d5fd6] hover:underline">{t.demo} <ArrowUpRight size={13} /></a>
+                    </div>
+                  )}
+                </div>
+              </div>
+            ))}
           </div>
         </Section>
 
