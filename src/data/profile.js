@@ -29,7 +29,7 @@ export const PROFILE = {
       ['4e année', "Cycle ingénieur ESAIP"],
       ['3 stages', 'Systèmes, réseau et support'],
       ['Top 2 %', 'TryHackMe'],
-      ['CEH', 'EC-Council (en cours)'],
+      ['Google', 'Certificat Cybersécurité'],
     ],
   },
   en: {
@@ -46,7 +46,7 @@ export const PROFILE = {
       ['4th year', 'ESAIP engineering program'],
       ['3 internships', 'Systems, network and support'],
       ['Top 2%', 'TryHackMe'],
-      ['CEH', 'EC-Council (in progress)'],
+      ['Google', 'Cybersecurity Certificate'],
     ],
   },
 
